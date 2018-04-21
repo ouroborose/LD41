@@ -11,6 +11,7 @@ public class BaseObject : MonoBehaviour {
     public Renderer[] m_renderers { get; protected set; }
 
     protected Color[] m_originalColors;
+    protected bool m_colorsModified = false;
 
     protected virtual void Awake()
     {
@@ -26,7 +27,7 @@ public class BaseObject : MonoBehaviour {
             m_rigidbody = GetComponentInChildren<Rigidbody>(true);
         }
 
-        m_renderers = GetComponentsInChildren<Renderer>(true);
+        m_renderers = m_model.GetComponentsInChildren<Renderer>(true);
 
         m_originalColors = new Color[m_renderers.Length];
         
@@ -49,6 +50,11 @@ public class BaseObject : MonoBehaviour {
 
     public virtual void ResetColor()
     {
+        if(!m_colorsModified)
+        {
+            return;
+        }
+
         for (int i = 0; i < m_renderers.Length; ++i)
         {
             m_renderers[i].material.color = m_originalColors[i];
@@ -57,6 +63,7 @@ public class BaseObject : MonoBehaviour {
 
     public virtual void SetColor(Color c)
     {
+        m_colorsModified = true;
         for (int i = 0; i < m_renderers.Length; ++i)
         {
             m_renderers[i].material.color = c;

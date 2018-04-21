@@ -72,7 +72,8 @@ MonoBehaviour:
     type: 2}
   m_buildingRoofPrefab: {fileID: 1695642137997652, guid: e12a810d6c7e35c49b5b42ddaa0fc518,
     type: 2}
-  m_levelSize: 3
+  m_levelWidth: 4
+  m_levelHeight: 3
   m_cityBlockSize: 3
   m_maxBuildingHeight: 3
   m_roofProbability: 0.5

@@ -21,6 +21,11 @@ public class PlayerController : MonoBehaviour {
 
     public void ControlledUpdate()
     {
+        if(m_character == null)
+        {
+            return;
+        }
+
         Vector3 moveDir = Vector3.zero;
         Vector3 forward = Vector3.ProjectOnPlane(m_camTrans.forward, Vector3.up).normalized;
         Vector3 right = m_camTrans.right;

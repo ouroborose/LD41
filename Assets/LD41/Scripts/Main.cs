@@ -6,26 +6,36 @@ public class Main : Singleton<Main> {
 
     public GameObject m_player1Prefab;
     public GameObject m_player2Prefab;
-    
-    protected List<PlayerController> m_players = new List<PlayerController>();
 
+    public float m_playerSpawnOffset = 5.0f;
+
+    public List<PlayerController> m_players = new List<PlayerController>();
+    public List<PlayerData> m_playerDatas = new List<PlayerData>();
 
     protected void Start()
     {
         LevelGenerator.Instance.GenerateLevel();
+        CameraController.Instance.transform.position += new Vector3(LevelGenerator.Instance.m_totalWidth / 2.0f, 0.0f, LevelGenerator.Instance.m_totalHeight / 2.0f);
 
-        CreatePlayer(m_player1Prefab, LevelGenerator.Instance.GetPlayer1SpawnTile().transform.position + Vector3.up * 2.0f).m_character.SetColor(Color.blue);
-        CreatePlayer(m_player2Prefab, LevelGenerator.Instance.GetPlayer2SpawnTile().transform.position + Vector3.up * 2.0f).m_character.SetColor(Color.red);
+        BaseActor player1 = CreateActor(m_player1Prefab, LevelGenerator.Instance.GetPlayer1SpawnTile().transform.position + Vector3.up * m_playerSpawnOffset);
+        player1.SetColor(Color.blue);
+        player1.m_playerId = PlayerData.PlayerId.PLAYER_1;
+        m_players[0].m_character = player1;
+
+        BaseActor player2 = CreateActor(m_player2Prefab, LevelGenerator.Instance.GetPlayer2SpawnTile().transform.position + Vector3.up * m_playerSpawnOffset);
+        player2.SetColor(Color.red);
+        player2.m_playerId = PlayerData.PlayerId.PLAYER_2;
+        m_players[1].m_character = player2;
     }
+    
 
-    protected PlayerController CreatePlayer(GameObject prefab, Vector3 spawnPos)
+    protected BaseActor CreateActor(GameObject prefab, Vector3 spawnPos)
     {
-        GameObject playerObj = Instantiate(prefab);
-        PlayerController player = playerObj.GetComponent<PlayerController>();
-        player.m_character.SetSpawnPos(spawnPos, true);
-        m_players.Add(player);
-        CameraController.Instance.m_targets.Add(player.transform);
-        return player;
+        GameObject actorObj = Instantiate(prefab);
+        BaseActor actor = actorObj.GetComponent<BaseActor>();
+        actor.SetSpawnPos(spawnPos, true);
+        CameraController.Instance.m_targets.Add(actor.transform);
+        return actor;
     }
 
     protected void Update()
@@ -39,5 +49,14 @@ public class Main : Singleton<Main> {
         {
             BaseObject.s_allObjects[i].ControlledUpdate();
         }
+    }
+
+    public PlayerData GetPlayerData(PlayerData.PlayerId id)
+    {
+        if(id == PlayerData.PlayerId.UNASSIGNED || id == PlayerData.PlayerId.MAX_PLAYERS)
+        {
+            return null;
+        }
+        return m_playerDatas[(int)id];
     }
 }

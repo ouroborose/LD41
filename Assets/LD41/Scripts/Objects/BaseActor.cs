@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseActor : BaseObject {
+    public static RaycastHit[] s_sharedHits = new RaycastHit[50];
+    public static Ray s_sharedRay = new Ray();
+    public static int s_sharedHitsCount = 0;
 
+    public PlayerData.PlayerId m_playerId = PlayerData.PlayerId.UNASSIGNED;
+
+    [Header("Movement")]
     [SerializeField] protected int m_maxHp = 10;
     [SerializeField] protected float m_moveSpeed = 1.0f;
     [SerializeField] protected float m_jumpVelocity = 10.0f;
 
+    [Header("Actions")]
     [SerializeField] protected float m_actionDelayTime = 0.1f;
     [SerializeField] protected float m_comboFinishDelayTime = 0.5f;
     [SerializeField] protected float m_comboTimeThreshold = 0.25f;
+    [SerializeField] protected float m_hitRange = 1.0f;
 
     [SerializeField] protected Transform m_holdPoint;
+    [SerializeField] protected GameObject m_placementIndicator;
 
     public enum AnimationID : int
     {
@@ -26,7 +35,7 @@ public class BaseActor : BaseObject {
         HOLD_WALK,
         JUMP,
     }
-
+    
     [System.Serializable]
     public class AnimationData
     {
@@ -58,7 +67,13 @@ public class BaseActor : BaseObject {
     protected bool m_jumpRequested = false;
     protected bool m_actionRequested = false;
 
+
     protected BaseBuildingPart m_heldPart = null;
+
+    protected BaseBuildingPart m_pickUpCandidate = null;
+    protected BaseTile m_placementTile = null;
+    protected List<KeyValuePair<RaycastHit, BaseBuildingPart>> m_buildingPartsInRange = new List<KeyValuePair<RaycastHit, BaseBuildingPart>>();
+    protected List<KeyValuePair<RaycastHit, BaseActor>> m_actorsInRange = new List<KeyValuePair<RaycastHit, BaseActor>>();
 
     protected override void Awake()
     {
@@ -81,14 +96,70 @@ public class BaseActor : BaseObject {
     {
         base.ControlledUpdate();
 
+        UpdateDetection();
         UpdateAction();
         UpdateMovement();
         UpdateAnimationState();
         UpdateAnimation();
     }
 
+    protected void UpdateDetection()
+    {
+        m_pickUpCandidate = null;
+        m_placementTile = null;
+
+        m_buildingPartsInRange.Clear();
+        m_actorsInRange.Clear();
+
+        s_sharedRay = new Ray(transform.position + Vector3.up * 0.75f, transform.forward);
+        s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, 0.45f, s_sharedHits, m_hitRange);
+
+        float bestPartValue = float.MaxValue;
+
+        for (int i = 0; i < s_sharedHitsCount; ++i)
+        {
+            RaycastHit hit = s_sharedHits[i];
+            BaseObject obj = hit.collider.GetComponentInParent<BaseObject>();
+            if (obj == null || obj == this)
+            {
+                continue;
+            }
+
+            BaseBuildingPart part = obj as BaseBuildingPart;
+            if(part != null)
+            {
+                m_buildingPartsInRange.Add(new KeyValuePair<RaycastHit, BaseBuildingPart>(hit, part));
+                if(m_heldPart == null && part.m_isBroken)
+                {
+                    if(hit.distance < bestPartValue)
+                    {
+                        bestPartValue = hit.distance;
+                        m_pickUpCandidate = part;
+                    }
+                }
+                continue;
+            }
+
+            BaseActor actor = obj as BaseActor;
+            if(actor != null)
+            {
+                m_actorsInRange.Add(new KeyValuePair<RaycastHit, BaseActor>(hit, actor));
+            }
+        }
+    }
+
     protected void UpdateAction()
     {
+        
+        if(m_heldPart == null)
+        {
+            // look for pickup
+        }
+        else
+        {
+            // look for placement tile
+        }
+
         m_actionDelayTimer -= Time.deltaTime;
         if (m_actionRequested && m_actionDelayTimer <= 0.0f)
         {
@@ -98,28 +169,54 @@ public class BaseActor : BaseObject {
 
             if(m_heldPart == null)
             {
-                // TODO: search for building parts to pickup
-                m_timeSinceLastAttack = 0.0f;
-                AnimationID attackID = DoAttack(m_attackComboCount);
-                if(attackID == AnimationID.ATTACK_3)
+                if(m_pickUpCandidate == null)
                 {
-                    m_actionDelayTimer = m_comboFinishDelayTime;
-                }
-
-
-                if(m_timeSinceLastAttack < m_comboTimeThreshold && m_attackComboCount < 2)
-                {
-                    m_attackComboCount++;
+                    HandleAttacking();
                 }
                 else
                 {
-                    m_attackComboCount = 0;
+                    PickUpPart(m_pickUpCandidate);
                 }
+            }
+            else
+            {
+                // place part
+                PlacePart();
             }
         }
 
         m_timeSinceLastAttack += Time.deltaTime;
         if(m_timeSinceLastAttack >= m_comboTimeThreshold)
+        {
+            m_attackComboCount = 0;
+        }
+    }
+
+    protected void PickUpPart(BaseBuildingPart pickup)
+    {
+
+    }
+
+    protected void PlacePart()
+    {
+
+    }
+
+    protected void HandleAttacking()
+    {
+        m_timeSinceLastAttack = 0.0f;
+        AnimationID attackID = DoAttack(m_attackComboCount);
+        if (attackID == AnimationID.ATTACK_3)
+        {
+            m_actionDelayTimer = m_comboFinishDelayTime;
+        }
+
+
+        if (m_timeSinceLastAttack < m_comboTimeThreshold && m_attackComboCount < 2)
+        {
+            m_attackComboCount++;
+        }
+        else
         {
             m_attackComboCount = 0;
         }
@@ -131,9 +228,25 @@ public class BaseActor : BaseObject {
         Debug.Log(attackID);
         PlayAnimation(attackID, true);
         MoveToward(transform.forward);
+        
+        for(int i = 0; i < m_buildingPartsInRange.Count; ++i)
+        {
+            KeyValuePair<RaycastHit, BaseBuildingPart> pair = m_buildingPartsInRange[i];
 
-        // TODO: deal damage
+            Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
+            impactDir.Normalize();
+            pair.Value.TakeDamage(CalculateDamage(attackID), impactDir);
+        }
         return attackID;
+    }
+
+    protected int CalculateDamage(AnimationID attackID)
+    {
+        if(attackID == AnimationID.ATTACK_3)
+        {
+            return 3;
+        }
+        return 1;
     }
 
     protected void UpdateMovement()
@@ -282,7 +395,7 @@ public class BaseActor : BaseObject {
         Reset();
     }
 
-    public void TakeDamage(int damage, Vector3 knockBack)
+    public void TakeDamage(int damage, Vector3 impactDir)
     {
 
     }

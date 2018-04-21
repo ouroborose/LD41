@@ -10,7 +10,8 @@ public class LevelGenerator : Singleton<LevelGenerator> {
     public GameObject m_buildingStoryPrefab;
     public GameObject m_buildingRoofPrefab;
 
-    public int m_levelSize = 3;
+    public int m_levelWidth = 4;
+    public int m_levelHeight = 3;
 
     public int m_cityBlockSize = 3;
     public int m_maxBuildingHeight = 5;
@@ -18,41 +19,44 @@ public class LevelGenerator : Singleton<LevelGenerator> {
     public float m_roofProbability = 0.5f;
 
 
-    public BoxCollider m_groundCollider;
+    [SerializeField] protected BoxCollider m_groundCollider;
 
-    protected int m_totalSize;
+    public int m_totalWidth { get; protected set; }
+    public int m_totalHeight { get; protected set; }
     protected BaseTile[,] m_tiles;
 
     public void GenerateLevel()
     {
         int stepSize = m_cityBlockSize + 1;
-        m_totalSize = m_levelSize * stepSize + 1;
-        m_tiles = new BaseTile[m_totalSize, m_totalSize];
+        m_totalWidth = m_levelWidth * stepSize + 1;
+        m_totalHeight = m_levelHeight * stepSize + 1;
+        m_tiles = new BaseTile[m_totalWidth, m_totalHeight];
 
-        Debug.LogFormat("Generating Level: size: {0}", m_totalSize);
+        Debug.LogFormat("Generating Level: size: {0}", m_totalWidth);
+
+        int spawnOffset = m_levelHeight / 2;
 
         // build blocks
-        for (int blockX = 0; blockX < m_levelSize; ++blockX)
+        for (int blockX = 0; blockX < m_levelWidth; ++blockX)
         {
-            for (int blockY = 0; blockY < m_levelSize; ++blockY)
+            for (int blockY = 0; blockY < m_levelHeight; ++blockY)
             {
-                bool generateBuildings = !(blockX == 0 && blockY == m_levelSize - 1 || blockY == 0 && blockX == m_levelSize - 1);
+                bool generateBuildings = !((blockX == 0 && blockY == spawnOffset) || (blockX == m_levelWidth-1 && blockY == m_levelHeight - 1 - spawnOffset));
                 GenerateCityBlock(blockX * stepSize, blockY * stepSize, m_cityBlockSize, generateBuildings);
             }
         }
 
         // fill in roads
-        for (int blockX = 0; blockX < m_totalSize; ++blockX)
+        for (int blockX = 0; blockX < m_totalWidth; ++blockX)
         {
-            for (int blockY = 0; blockY < m_totalSize; ++blockY)
+            for (int blockY = 0; blockY < m_totalHeight; ++blockY)
             {
                 GenerateRoad(blockX, blockY);
             }
         }
-
-        int halfSize = Mathf.FloorToInt(m_totalSize * 0.5f);
-        m_groundCollider.center = new Vector3(halfSize, -0.5f, halfSize);
-        m_groundCollider.size = new Vector3(m_totalSize, 1, m_totalSize);
+        
+        m_groundCollider.center = new Vector3(Mathf.FloorToInt(m_totalWidth * 0.5f), -0.5f, Mathf.FloorToInt(m_totalHeight * 0.5f));
+        m_groundCollider.size = new Vector3(m_totalWidth, 1, m_totalHeight);
 
         GetPlayer1SpawnTile().SetColor(Color.blue);
         GetPlayer2SpawnTile().SetColor(Color.red);
@@ -72,7 +76,7 @@ public class LevelGenerator : Singleton<LevelGenerator> {
                 BaseTile tile = CreateTile(m_groundTilePrefab, x, y);
                 if(generateBuildings)
                 {
-                    GenerateBuilding(tile, Random.Range(0, m_maxBuildingHeight), Random.value < m_roofProbability);
+                    GenerateBuilding(tile, Random.Range(0, m_maxBuildingHeight + 1), Random.value < m_roofProbability);
                 }
                 ++y;
             }
@@ -126,11 +130,31 @@ public class LevelGenerator : Singleton<LevelGenerator> {
 
     public BaseTile GetPlayer1SpawnTile()
     {
-        return m_tiles[m_cityBlockSize / 2 + 1, m_levelSize * (m_cityBlockSize+1) - m_cityBlockSize/2 -1];
+        int x = m_cityBlockSize / 2 + 1;
+        int y = (m_levelHeight / 2 + 1) * (m_cityBlockSize + 1) - (m_cityBlockSize/2 + 1);
+        return GetTile(x, y);
     }
 
     public BaseTile GetPlayer2SpawnTile()
     {
-        return m_tiles[ m_levelSize * (m_cityBlockSize + 1) - m_cityBlockSize / 2 - 1, m_cityBlockSize / 2 + 1];
+        int x = m_totalWidth - (m_cityBlockSize / 2 + 1) - 1;
+        int y = m_totalHeight - ((m_levelHeight / 2 + 1) * (m_cityBlockSize + 1) - (m_cityBlockSize / 2 + 1)) - 1;
+        return GetTile(x, y);
+    }
+
+    public BaseTile GetTile(int x, int y)
+    {
+        if(x < 0 || y < 0 || x >= m_totalWidth || y >= m_totalHeight)
+        {
+            return null;
+        }
+        return m_tiles[x, y];
+    }
+
+    public BaseTile GetClosestTile(Vector3 pos)
+    {
+        int x = Mathf.RoundToInt(pos.x);
+        int y = Mathf.RoundToInt(pos.z);
+        return GetTile(x, y);
     }
 }
