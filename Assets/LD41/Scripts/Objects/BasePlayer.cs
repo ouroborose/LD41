@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseActor : BaseObject {
+public class BasePlayer : BaseObject {
     
 }

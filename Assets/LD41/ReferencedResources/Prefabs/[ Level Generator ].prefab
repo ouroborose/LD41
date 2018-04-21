@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1272648880760240}
+  m_IsPrefabParent: 1
+--- !u!1 &1272648880760240
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4908914804322954}
+  - component: {fileID: 114908341907317828}
+  - component: {fileID: 65961952155279396}
+  m_Layer: 8
+  m_Name: '[ Level Generator ]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4908914804322954
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1272648880760240}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &65961952155279396
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1272648880760240}
+  m_Material: {fileID: 13400000, guid: 0822f8ec9d3a09e42b4b07c717f8ba5b, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: -0.5, z: 0}
+--- !u!114 &114908341907317828
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1272648880760240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22e86e9e749418543ae2238bfb2daaf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_roadTilePrefab: {fileID: 1058910785546414, guid: de8da1060a3abd147a82f7948756eb5f,
+    type: 2}
+  m_groundTilePrefab: {fileID: 1097461330269426, guid: 4dac2ad746fc053479c0d4592dbd84c9,
+    type: 2}
+  m_buildingStoryPrefab: {fileID: 1291222324597982, guid: b42b336a82f30dd4f89cbf1a10772bdc,
+    type: 2}
+  m_buildingRoofPrefab: {fileID: 1695642137997652, guid: e12a810d6c7e35c49b5b42ddaa0fc518,
+    type: 2}
+  m_levelSize: 3
+  m_cityBlockSize: 3
+  m_maxBuildingHeight: 3
+  m_roofProbability: 0.5
+  m_groundCollider: {fileID: 65961952155279396}
