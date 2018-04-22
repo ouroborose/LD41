@@ -4,6 +4,9 @@ using UnityEngine;
 using DG.Tweening;
 
 public class BaseActor : BaseObject {
+    public static readonly Color PLACEMENT_ALLOWED_COLOR = new Color(0, 1, 0, 0.5f);
+    public static readonly Color PLACEMENT_NOT_ALLOWED_COLOR = new Color(1, 0, 0, 0.5f);
+
     public static RaycastHit[] s_sharedHits = new RaycastHit[50];
     public static Ray s_sharedRay = new Ray();
     public static int s_sharedHitsCount = 0;
@@ -22,7 +25,7 @@ public class BaseActor : BaseObject {
     [SerializeField] protected float m_hitRange = 1.0f;
 
     [SerializeField] protected Transform m_holdPoint;
-    [SerializeField] protected GameObject m_placementIndicator;
+    [SerializeField] protected BaseObject m_placementIndicator;
 
     public enum AnimationID : int
     {
@@ -74,6 +77,7 @@ public class BaseActor : BaseObject {
 
     protected BaseBuildingPart m_pickUpCandidate = null;
     protected BaseTile m_placementTile = null;
+    protected bool m_placementAllowed = false;
     protected List<KeyValuePair<RaycastHit, BaseBuildingPart>> m_buildingPartsInRange = new List<KeyValuePair<RaycastHit, BaseBuildingPart>>();
     protected List<KeyValuePair<RaycastHit, BaseActor>> m_actorsInRange = new List<KeyValuePair<RaycastHit, BaseActor>>();
 
@@ -86,9 +90,13 @@ public class BaseActor : BaseObject {
             m_animationMapping.Add(m_animations[i].m_id, m_animations[i]);
         }
 
+        m_placementIndicator.transform.parent = null;
+        m_placementIndicator.transform.rotation = Quaternion.identity;
+        m_placementIndicator.gameObject.SetActive(false);
+
         PlayAnimation(AnimationID.IDLE);
     }
-
+    
     public virtual void Reset()
     {
         m_currentHp = m_maxHp;
@@ -109,6 +117,7 @@ public class BaseActor : BaseObject {
     {
         m_pickUpCandidate = null;
         m_placementTile = null;
+        m_placementAllowed = false;
 
         m_buildingPartsInRange.Clear();
         m_actorsInRange.Clear();
@@ -148,6 +157,32 @@ public class BaseActor : BaseObject {
                 m_actorsInRange.Add(new KeyValuePair<RaycastHit, BaseActor>(hit, actor));
             }
         }
+
+        if(m_heldPart != null)
+        {
+            m_placementTile = LevelGenerator.Instance.GetClosestTile(transform.position + transform.forward);
+
+            if(m_placementTile != null)
+            {
+                BaseBuildingPart topPart = m_placementTile.GetTopPart();
+                if(topPart == null)
+                {
+                    m_placementAllowed = true;
+                    m_placementIndicator.transform.position = m_placementTile.transform.position;
+                }
+                else
+                {
+                    m_placementAllowed = topPart.m_type != BaseBuildingPart.BuildingPartType.Roof && topPart.transform.position.y <= transform.position.y + 1.5f;
+                    m_placementIndicator.transform.position = topPart.transform.position + Vector3.up;
+                }
+            }
+        }
+
+        m_placementIndicator.gameObject.SetActive(m_placementTile != null);
+        if(m_placementIndicator.gameObject.activeSelf)
+        {
+            m_placementIndicator.SetColor(m_placementAllowed ? PLACEMENT_ALLOWED_COLOR : PLACEMENT_NOT_ALLOWED_COLOR);
+        }
     }
 
     protected void UpdateAction()
@@ -172,8 +207,14 @@ public class BaseActor : BaseObject {
             }
             else
             {
-                // place part
-                PlacePart();
+                if(m_placementAllowed)
+                {
+                    PlacePart();
+                }
+                else
+                {
+
+                }
             }
         }
 
@@ -193,33 +234,27 @@ public class BaseActor : BaseObject {
 
         PlayAnimation(AnimationID.PICK_UP, true);
         m_heldPart = pickup;
-        m_heldPart.m_isBeingCarried = true;
-        m_heldPart.transform.parent = m_holdPoint;
-        m_heldPart.transform.DOLocalMove(Vector3.zero, 0.25f, true).SetDelay(0.25f);
-        m_heldPart.transform.DOLocalRotate(Vector3.zero, 0.25f);
-        m_heldPart.RemoveRigidbody();
+        m_heldPart.PickUp(m_holdPoint);
         m_actionDelayTimer = 0.5f;
     }
 
     protected void PlacePart()
     {
-        if(m_heldPart == null)
+        if(m_heldPart == null || m_placementTile == null)
         {
             return;
         }
 
-        m_heldPart.m_isBeingCarried = false;
-        m_heldPart.transform.parent = null;
-        m_heldPart.RestoreRigidbody();
-        DOTween.Kill(m_heldPart.transform);
-        m_heldPart.transform.position = transform.position + transform.forward;
-        m_heldPart.transform.rotation = Utils.GetClosestAlignedRotation(m_heldPart.transform.rotation);
+        m_heldPart.Place(m_placementTile, m_playerId);
         m_heldPart = null;
     }
 
     protected void DropPart()
     {
-
+        if(m_heldPart == null)
+        {
+            return;
+        }
     }
 
     protected void HandleAttacking()

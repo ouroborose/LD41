@@ -124,4 +124,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_model: {fileID: 1305447421188012}
-  m_buildingParts: []
+  m_rigidbody: {fileID: 0}
+  m_type: 1
+  m_owner: -1

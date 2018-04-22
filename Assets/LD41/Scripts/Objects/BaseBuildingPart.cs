@@ -21,6 +21,7 @@ public class BaseBuildingPart : BaseObject {
 
     public int m_maxHp = 3;
 
+    public PlayerData.PlayerId m_owner = PlayerData.PlayerId.UNASSIGNED;
     public bool m_isBeingCarried = false;
     public bool m_isBroken { get { return m_currentHp <= 0; } }
 
@@ -73,5 +74,27 @@ public class BaseBuildingPart : BaseObject {
 
         SetColor(BROKEN_COLOR);
     }
+
+    public void PickUp(Transform holdPoint)
+    {
+        m_isBeingCarried = true;
+        transform.parent = holdPoint;
+        transform.DOLocalMove(Vector3.zero, 0.25f, true).SetDelay(0.25f);
+        transform.DOLocalRotate(Vector3.zero, 0.25f);
+        RemoveRigidbody();
+    }
     
+    public void Place(BaseTile placementTile, PlayerData.PlayerId owner)
+    {
+        m_isBeingCarried = false;
+        transform.parent = null;
+        RestoreRigidbody();
+        DOTween.Kill(transform);
+
+        placementTile.AddBuildingPart(this);
+        if (placementTile.m_type == BaseTile.TileType.GROUND)
+        {
+            placementTile.Claim(owner);
+        }
+    }
 }

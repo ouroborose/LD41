@@ -10,14 +10,19 @@ public class BaseObject : MonoBehaviour {
     public GameObject m_model;
     public Rigidbody m_rigidbody;
 
+    public bool m_isUsingInstancedMaterial = true;
+    public string m_colorPropertyName = string.Empty;
+
     protected float m_originallMass;
     protected float m_originalDrag;
     protected float m_originalAngularDrag;
 
     public Renderer[] m_renderers { get; protected set; }
-    
+
+    protected int m_colorPropertyID = 0;
     protected Color[] m_originalColors;
-    protected bool m_colorsModified = false;
+    protected bool m_colorModified = false;
+    protected Color m_color;
 
     protected virtual void Awake()
     {
@@ -45,13 +50,21 @@ public class BaseObject : MonoBehaviour {
             m_originalAngularDrag = m_rigidbody.angularDrag;
         }
 
+        if (m_colorPropertyName == string.Empty)
+        {
+            m_colorPropertyID = COLOR_PROPERTY_ID;
+        }
+        else
+        {
+            m_colorPropertyID = Shader.PropertyToID(m_colorPropertyName);
+        }
+
         m_renderers = m_model.GetComponentsInChildren<Renderer>(true);
         
         m_originalColors = new Color[m_renderers.Length];
         for(int i = 0; i < m_renderers.Length; ++i)
         {
-            m_renderers[i].GetPropertyBlock(s_sharedMaterialPropertyBlock);
-            m_originalColors[i] = s_sharedMaterialPropertyBlock.GetColor(COLOR_PROPERTY_ID);
+            m_originalColors[i] = m_renderers[i].sharedMaterial.color;
         }
     }
 
@@ -91,26 +104,53 @@ public class BaseObject : MonoBehaviour {
 
     public virtual void ResetColor()
     {
-        if(!m_colorsModified)
+        if(!m_colorModified)
         {
             return;
         }
+        m_colorModified = false;
 
-        for (int i = 0; i < m_renderers.Length; ++i)
+        if(m_isUsingInstancedMaterial)
         {
-            s_sharedMaterialPropertyBlock.SetColor(COLOR_PROPERTY_ID, m_originalColors[i]);
-            m_renderers[i].SetPropertyBlock(s_sharedMaterialPropertyBlock);
+            for (int i = 0; i < m_renderers.Length; ++i)
+            {
+                s_sharedMaterialPropertyBlock.SetColor(m_colorPropertyID, m_originalColors[i]);
+                m_renderers[i].SetPropertyBlock(s_sharedMaterialPropertyBlock);
+            }
         }
+        else
+        {
+            for (int i = 0; i < m_renderers.Length; ++i)
+            {
+                m_renderers[i].material.color = m_originalColors[i];
+            }
+        }
+        
     }
 
     public virtual void SetColor(Color c)
     {
-        Debug.Log("setting color");
-        m_colorsModified = true;
-        for (int i = 0; i < m_renderers.Length; ++i)
+        if(c == m_color)
         {
-            s_sharedMaterialPropertyBlock.SetColor(COLOR_PROPERTY_ID, c);
-            m_renderers[i].SetPropertyBlock(s_sharedMaterialPropertyBlock);
+            return;
+        }
+
+        m_colorModified = true;
+        m_color = c;
+        if (m_isUsingInstancedMaterial)
+        {
+            for (int i = 0; i < m_renderers.Length; ++i)
+            {
+                s_sharedMaterialPropertyBlock.SetColor(m_colorPropertyID, c);
+                m_renderers[i].SetPropertyBlock(s_sharedMaterialPropertyBlock);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < m_renderers.Length; ++i)
+            {
+                m_renderers[i].material.SetColor(m_colorPropertyID, c);
+            }
         }
     }
 }
