@@ -130,7 +130,7 @@ public class BaseObject : MonoBehaviour {
 
     public virtual void SetColor(Color c)
     {
-        if(c == m_color)
+        if(m_colorModified && c == m_color)
         {
             return;
         }
