@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BuildingMaterial
+  m_Name: BuildingBreaking02Material
   m_Shader: {fileID: 4800000, guid: 4865fe98aacf0e844b26bfe8209ea96e, type: 3}
   m_ShaderKeywords: _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 4
@@ -39,7 +39,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5aacf7cb85e4c42f3888a89dfc941d24, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8d21f45a18c65466381ae232f2e400e5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

@@ -7,12 +7,18 @@ ModelImporter:
   fileIDToRecycleName:
     100000: Building
     100002: //RootNode
+    100004: default
     400000: Building
     400002: //RootNode
+    400004: default
     2100000: palette
+    2100002: defaultMat
     2300000: Building
+    2300002: default
     3300000: Building
+    3300002: default
     4300000: Building
+    4300002: default
   externalObjects:
   - first:
       type: UnityEngine:Material
