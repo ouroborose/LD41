@@ -62,7 +62,6 @@ public class BaseBuildingPart : BaseObject {
 
     public void Shake(Vector3 force)
     {
-
         DOTween.Kill(m_model.transform, true);
         m_model.transform.DOPunchPosition(force, 0.33f);
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Main : Singleton<Main> {
 
@@ -11,6 +12,13 @@ public class Main : Singleton<Main> {
 
     public List<PlayerController> m_players = new List<PlayerController>();
     public List<PlayerData> m_playerDatas = new List<PlayerData>();
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        SceneManager.LoadScene(1, LoadSceneMode.Additive);
+    }
 
     protected void Start()
     {

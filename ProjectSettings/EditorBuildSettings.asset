@@ -8,3 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/LD41/Scenes/Main.unity
     guid: ac3fc60b5b7d873419ac2dd88ca918d3
+  - enabled: 1
+    path: Assets/LD41/Scenes/MainUI.unity
+    guid: a52b05e2d82480246a57822201f42dc9
