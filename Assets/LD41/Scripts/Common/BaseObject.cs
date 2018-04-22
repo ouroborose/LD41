@@ -7,6 +7,8 @@ public class BaseObject : MonoBehaviour {
     public static MaterialPropertyBlock s_sharedMaterialPropertyBlock;
     public readonly int COLOR_PROPERTY_ID = Shader.PropertyToID("_Color");
 
+    public const float MIN_Y = -15.0f;
+
     public GameObject m_model;
     public Rigidbody m_rigidbody;
 
@@ -64,7 +66,7 @@ public class BaseObject : MonoBehaviour {
         m_originalColors = new Color[m_renderers.Length];
         for(int i = 0; i < m_renderers.Length; ++i)
         {
-            m_originalColors[i] = m_renderers[i].sharedMaterial.color;
+            m_originalColors[i] = m_renderers[i].sharedMaterial.GetColor(m_colorPropertyID);
         }
     }
 
@@ -100,6 +102,15 @@ public class BaseObject : MonoBehaviour {
     public virtual void ControlledUpdate()
     {
         // for children to fill out
+        if(transform.position.y <= MIN_Y)
+        {
+            OnKillPlaneHit();
+        }
+    }
+
+    protected virtual void OnKillPlaneHit()
+    {
+        gameObject.SetActive(false);
     }
 
     public virtual void ResetColor()

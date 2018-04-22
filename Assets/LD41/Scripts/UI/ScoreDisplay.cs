@@ -10,46 +10,59 @@ public class ScoreDisplay : BaseUIElement
     public PlayerDisplay m_player2Display;
 
     public RectTransform m_barHolder;
-    public Image m_player1Bar;
-    public Image m_player2Bar;
+    public ScoreBar m_player1Bar;
+    public ScoreBar m_player2Bar;
+
+    public float m_maxBarMoveDist = 600.0f;
+    public float m_barMoveStep = 10.0f;
+    public float m_barMoveTime = 0.5f;
+    public Ease m_barMoveEase = Ease.InOutSine;
+
+    protected void Awake()
+    {
+        EventManager.OnScoreChange.Register(UpdateScore);
+    }
+
+    protected void OnDestroy()
+    {
+        EventManager.OnScoreChange.Unregister(UpdateScore);
+    }
+
+    public void UpdateScore()
+    {
+        PlayerData p1 = Main.Instance.GetPlayerData(PlayerData.PlayerId.PLAYER_1);
+        PlayerData p2 = Main.Instance.GetPlayerData(PlayerData.PlayerId.PLAYER_2);
+
+        m_player1Bar.SetScore(p1.m_score);
+        m_player2Bar.SetScore(p2.m_score);
+
+        float scoreDelta = p1.m_score - p2.m_score;
+        m_barHolder.DOLocalMoveX(Mathf.Clamp(scoreDelta * m_barMoveStep, -m_maxBarMoveDist, m_maxBarMoveDist), m_barMoveTime).SetEase(m_barMoveEase);
+    }
 
     public override void Show(bool instant = false)
     {
         //base.Show(instant);
-        if(instant)
+        DOTween.Kill(m_barHolder, true);
+
+        m_player1Display.Show(instant);
+        m_player2Display.Show(instant);
+        m_player1Bar.Show(instant);
+        m_player2Bar.Show(instant);
+
+        if (!instant)
         {
-            m_player1Display.Show(instant);
-            m_player2Display.Show(instant);
-
-            m_player1Bar.rectTransform.localPosition = Vector3.zero;
-            m_player2Bar.rectTransform.localPosition = Vector3.zero;
-            return;
+            m_barHolder.DOShakePosition(2.0f, 50, 100);
         }
-
-        m_player1Display.Show();
-        m_player2Display.Show();
-
-        m_barHolder.DOShakePosition(m_transitionInTime * 2, 30, 30);
-        TransitionBarIn(m_player1Bar);
-        TransitionBarIn(m_player2Bar);
-    }
-
-    protected void TransitionBarIn(Image bar)
-    {
-        bar.rectTransform.DOLocalMoveX(0.0f, m_transitionInTime).SetDelay(m_player1Display.m_transitionInTime * 0.5f).SetEase(m_transitionInEase);
     }
 
     public override void Hide(bool instant = false)
     {
         //base.Hide(instant);
-        if (instant)
-        {
-            m_player1Display.Hide(instant);
-            m_player2Display.Hide(instant);
-
-            m_player1Bar.rectTransform.localPosition = Vector3.right * -Screen.width;
-            m_player2Bar.rectTransform.localPosition = Vector3.right * Screen.width;
-            return;
-        }
+        DOTween.Kill(m_barHolder, true);
+        m_player1Display.Hide(instant);
+        m_player2Display.Hide(instant);
+        m_player1Bar.Hide(instant);
+        m_player2Bar.Hide(instant);
     }
 }

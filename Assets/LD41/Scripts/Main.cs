@@ -13,6 +13,8 @@ public class Main : Singleton<Main> {
     public List<PlayerController> m_players = new List<PlayerController>();
     public List<PlayerData> m_playerDatas = new List<PlayerData>();
 
+    protected bool m_scoreDirty = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -53,7 +55,17 @@ public class Main : Singleton<Main> {
 
         for(int i = 0; i < BaseObject.s_allObjects.Count; ++i)
         {
-            BaseObject.s_allObjects[i].ControlledUpdate();
+            BaseObject obj = BaseObject.s_allObjects[i];
+            if(obj.gameObject.activeSelf)
+            {
+                obj.ControlledUpdate();
+            }
+        }
+
+        if(m_scoreDirty)
+        {
+            m_scoreDirty = false;
+            EventManager.OnScoreChange.Dispatch();
         }
     }
 
@@ -64,5 +76,21 @@ public class Main : Singleton<Main> {
             return null;
         }
         return m_playerDatas[(int)id];
+    }
+
+    public void ModifyScore(PlayerData.PlayerId playerId, int scoreDelta)
+    {
+        if(scoreDelta == 0)
+        {
+            return;
+        }
+        Debug.LogFormat("Score Change {0}: {1}", playerId, scoreDelta);
+
+        PlayerData player = GetPlayerData(playerId);
+        if(player != null)
+        {
+            player.m_score += scoreDelta;
+            m_scoreDirty = true;
+        }
     }
 }

@@ -98,9 +98,6 @@ public class BaseBuildingPart : BaseObject {
         DOTween.Kill(transform);
 
         placementTile.AddBuildingPart(this);
-        if (placementTile.m_type == BaseTile.TileType.GROUND)
-        {
-            placementTile.Claim(owner);
-        }
+        placementTile.Claim(owner);
     }
 }

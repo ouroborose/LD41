@@ -113,6 +113,12 @@ public class BaseActor : BaseObject {
         UpdateAnimation();
     }
 
+    protected override void OnKillPlaneHit()
+    {
+        //base.OnKillPlaneHit();
+        Respawn(false);
+    }
+
     protected void UpdateDetection()
     {
         m_pickUpCandidate = null;
@@ -191,7 +197,6 @@ public class BaseActor : BaseObject {
         if (m_actionRequested && m_actionDelayTimer <= 0.0f)
         {
             m_actionDelayTimer = m_actionDelayTime;
-            Debug.Log("action");
             m_actionRequested = false;
 
             if(m_heldPart == null)
@@ -454,10 +459,14 @@ public class BaseActor : BaseObject {
         }
     }
 
-    public void Respawn()
+    public void Respawn(bool reset = true)
     {
         TeleportTo(m_spawnPos);
-        Reset();
+        m_rigidbody.velocity = Vector3.zero;
+        if(reset)
+        {
+            Reset();
+        }
     }
 
     public void TakeDamage(int damage, Vector3 impactDir)

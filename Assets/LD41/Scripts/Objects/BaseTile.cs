@@ -24,6 +24,19 @@ public class BaseTile : BaseObject {
         part.m_currentTile = this;
         part.m_rigidbody.isKinematic = true;
     }
+
+    public void RemoveBuildingPart(BaseBuildingPart part, bool shouldBreak = false)
+    {
+        if(m_buildingParts.Remove(part))
+        {
+            part.m_owner = PlayerData.PlayerId.UNASSIGNED;
+            part.m_currentTile = null;
+            if(shouldBreak)
+            {
+                part.Break(Vector3.up);
+            }
+        }
+    }
     
     public void OnPartBreak(BaseBuildingPart part)
     {
@@ -33,13 +46,35 @@ public class BaseTile : BaseObject {
             return; // part not found
         }
 
-        m_buildingParts.Remove(part);
+        int numFloors = m_buildingParts.Count;
+        bool roofRemoved = part.m_type == BaseBuildingPart.BuildingPartType.Roof;
+        int scoreValue = start + 1;
+        int scoreLost = -scoreValue;
+        Debug.Log(scoreLost);
+        RemoveBuildingPart(part);
         while(start < m_buildingParts.Count)
         {
-            BaseBuildingPart upperPart = m_buildingParts[start];
-            upperPart.Break(Vector3.up);
-            m_buildingParts.Remove(upperPart);
+            scoreValue++;
+            scoreLost -= scoreValue;
+            Debug.Log(scoreLost);
+
+            part = m_buildingParts[start];
+            if(part.m_type == BaseBuildingPart.BuildingPartType.Roof)
+            {
+                roofRemoved = true;
+            }
+            RemoveBuildingPart(part, true);
         }
+
+        if(roofRemoved)
+        {
+            for(int i = numFloors; i > 0; --i)
+            {
+                scoreLost -= i;
+            } 
+        }
+
+        Main.Instance.ModifyScore(m_owner, scoreLost);
     }
 
     public BaseBuildingPart GetTopPart()
@@ -54,13 +89,48 @@ public class BaseTile : BaseObject {
 
     public void Claim(PlayerData.PlayerId owner)
     {
-        m_owner = owner;
-        Color ownerColor = Main.Instance.GetPlayerData(m_owner).m_color;
+        Color ownerColor = Main.Instance.GetPlayerData(owner).m_color;
         //SetColor(ownerColor);
+        int scoreLost = 0;
+        int scoreGained = 0;
+        int totalValue = 0;
+
+        bool roofed = false;
+
         for(int i = 0; i < m_buildingParts.Count; ++i)
         {
-            m_buildingParts[i].m_owner = m_owner;
-            m_buildingParts[i].SetColor(ownerColor);
+            BaseBuildingPart part = m_buildingParts[i];
+            part.SetColor(ownerColor);
+
+            int scoreValue = i + 1;
+            if (part.m_owner != owner)
+            {
+                if (i < m_buildingParts.Count - 1)
+                {
+                    scoreLost -= scoreValue;
+                    scoreGained += scoreValue;
+                }
+                else
+                {
+                    scoreGained += scoreValue;
+                    if(part.m_type == BaseBuildingPart.BuildingPartType.Roof)
+                    {
+                        roofed = true;
+                    }
+                }
+            }
+
+            totalValue += scoreValue;
+            part.m_owner = owner;
         }
+
+        if (roofed)
+        {
+            scoreGained += totalValue;
+        }
+
+        Main.Instance.ModifyScore(m_owner, scoreLost);
+        m_owner = owner;
+        Main.Instance.ModifyScore(m_owner, scoreGained);
     }
 }

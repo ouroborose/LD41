@@ -21,4 +21,26 @@ public class UIManager : Singleton<UIManager> {
         m_scoreDisplay.Hide(true);
         m_scoreDisplay.Show();
     }
+
+    bool m_scoreDisplayVisible = true;
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            if(m_scoreDisplayVisible)
+            {
+                m_scoreDisplay.Hide();
+            }
+            else
+            {
+                m_scoreDisplay.Show();
+            }
+            m_scoreDisplayVisible = !m_scoreDisplayVisible;
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Main.Instance.ModifyScore(PlayerData.PlayerId.PLAYER_2, 100);
+        }
+    }
 }
