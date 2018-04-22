@@ -525,7 +525,7 @@ MonoBehaviour:
   m_barHolder: {fileID: 224366415062703296}
   m_player1Bar: {fileID: 114585836821208434}
   m_player2Bar: {fileID: 114719129405718410}
-  m_maxBarMoveDist: 300
+  m_maxBarMoveDist: 200
   m_barMoveStep: 5
   m_barMoveTime: 0.5
   m_barMoveEase: 4

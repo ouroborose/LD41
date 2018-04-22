@@ -31,8 +31,12 @@ public class ScoreBar : BaseUIElement {
 
     public void SetScore(int score)
     {
+        if(score == m_trueScore)
+        {
+            return;
+        }
         m_trueScore = score;
-        rectTransform.DOShakePosition(m_scoreUpdateTIme, 30, 100);
+        m_score.rectTransform.DOShakePosition(m_scoreUpdateTIme, 30, 100);
     }
 
     public override void Show(bool instant = false)
