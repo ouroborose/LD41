@@ -44,7 +44,7 @@ public class BaseUIElement : MonoBehaviour {
         switch (m_transitionMethod)
         {
             case TransitionMethod.MOVE:
-                rectTransform.DOLocalMoveY(0.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
+                rectTransform.DOLocalMoveY(0.0f, m_transitionInTime, true).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
                 break;
             case TransitionMethod.SCALE:
                 transform.DOScale(1.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
@@ -75,7 +75,7 @@ public class BaseUIElement : MonoBehaviour {
         switch (m_transitionMethod)
         {
             case TransitionMethod.MOVE:
-                rectTransform.DOLocalMoveY(Screen.height * 2, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
+                rectTransform.DOLocalMoveY(Screen.height * 2, m_transitionOutTime, true).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
                 break;
             case TransitionMethod.SCALE:
                 transform.DOScale(0.0f, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));

@@ -59,9 +59,9 @@ public class Main : Singleton<Main> {
         player2.transform.rotation = Utils.ALIGNED_ROTATIONS[3];
         m_players[1].m_character = player2;
 
-        yield return new WaitForSeconds(1.0f);
-
         m_state = GameState.TITLE;
+        UIManager.Instance.m_blackout.Hide();
+        UIManager.Instance.m_titleDisplay.Show();
     }
 
     public void StartGame()

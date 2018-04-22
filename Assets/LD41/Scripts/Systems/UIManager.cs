@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIManager : Singleton<UIManager> {
+    public BaseUIElement m_blackout;
     public ScoreDisplay m_scoreDisplay;
     public TitleDisplay m_titleDisplay;
     public EndDisplay m_endDisplay;
@@ -24,9 +25,11 @@ public class UIManager : Singleton<UIManager> {
         m_endDisplay.Hide(true);
         m_buttomMappingDisplay.Hide(true);
         m_scoreDisplay.Hide(true);
-        m_titleDisplay.Show(true);
+        m_titleDisplay.Hide(true);
+        m_blackout.Show(true);
     }
 
+#if UNITY_EDITOR
     bool m_scoreDisplayVisible = true;
     public void Update()
     {
@@ -48,4 +51,5 @@ public class UIManager : Singleton<UIManager> {
             Main.Instance.ModifyScore(PlayerData.PlayerId.PLAYER_2, 100);
         }
     }
+#endif
 }
