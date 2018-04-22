@@ -256,8 +256,8 @@ MonoBehaviour:
   m_downKey: 115
   m_rightKey: 100
   m_leftKey: 97
-  m_actionKey: 48
-  m_jumpKey: 50
+  m_actionKey: 50
+  m_jumpKey: 49
   m_character: {fileID: 0}
 --- !u!114 &114847099130037064
 MonoBehaviour:
