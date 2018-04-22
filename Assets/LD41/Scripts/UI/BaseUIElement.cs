@@ -26,7 +26,7 @@ public class BaseUIElement : MonoBehaviour {
     public virtual void Show(bool instant = false)
     {
         gameObject.SetActive(true);
-        DOTween.Kill(transform);
+        DOTween.Kill(rectTransform);
         if (instant)
         {
             switch(m_transitionMethod)
@@ -35,7 +35,7 @@ public class BaseUIElement : MonoBehaviour {
                     rectTransform.localPosition = Vector3.zero;
                     break;
                 case TransitionMethod.SCALE:
-                    transform.localScale = Vector3.one;
+                    rectTransform.localScale = Vector3.one;
                     break;
             }
             return;
@@ -47,7 +47,7 @@ public class BaseUIElement : MonoBehaviour {
                 rectTransform.DOLocalMoveY(0.0f, m_transitionInTime, true).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
                 break;
             case TransitionMethod.SCALE:
-                transform.DOScale(1.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
+                rectTransform.DOScale(1.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
                 break;
         }
 
@@ -56,7 +56,7 @@ public class BaseUIElement : MonoBehaviour {
 
     public virtual void Hide(bool instant = false)
     {
-        DOTween.Kill(transform);
+        DOTween.Kill(rectTransform);
         if (instant)
         {
             gameObject.SetActive(false);
@@ -72,13 +72,14 @@ public class BaseUIElement : MonoBehaviour {
             return;
         }
 
+        Debug.Log(name);
         switch (m_transitionMethod)
         {
             case TransitionMethod.MOVE:
                 rectTransform.DOLocalMoveY(Screen.height * 2, m_transitionOutTime, true).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
                 break;
             case TransitionMethod.SCALE:
-                transform.DOScale(0.0f, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
+                rectTransform.DOScale(0.0f, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
                 break;
         }
     }

@@ -54,5 +54,8 @@ MonoBehaviour:
   m_blackout: {fileID: 0}
   m_scoreDisplay: {fileID: 0}
   m_titleDisplay: {fileID: 0}
-  m_endDisplay: {fileID: 0}
+  m_endP1Display: {fileID: 0}
+  m_endP2Display: {fileID: 0}
+  m_endTieDisplay: {fileID: 0}
   m_buttomMappingDisplay: {fileID: 0}
+  m_timerDisplay: {fileID: 0}

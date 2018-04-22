@@ -7,8 +7,11 @@ public class UIManager : Singleton<UIManager> {
     public BaseUIElement m_blackout;
     public ScoreDisplay m_scoreDisplay;
     public TitleDisplay m_titleDisplay;
-    public EndDisplay m_endDisplay;
+    public EndDisplay m_endP1Display;
+    public EndDisplay m_endP2Display;
+    public EndDisplay m_endTieDisplay;
     public ButtonMappingsDisplay m_buttomMappingDisplay;
+    public TimerDisplay m_timerDisplay;
 
     protected override void Awake()
     {
@@ -22,10 +25,13 @@ public class UIManager : Singleton<UIManager> {
 
     protected void Start()
     {
-        m_endDisplay.Hide(true);
+        m_endP1Display.Hide(true);
+        m_endP2Display.Hide(true);
+        m_endTieDisplay.Hide(true);
         m_buttomMappingDisplay.Hide(true);
         m_scoreDisplay.Hide(true);
-        m_titleDisplay.Hide(true);
+        m_timerDisplay.Hide(true);
+        m_titleDisplay.Show(true);
         m_blackout.Show(true);
     }
 

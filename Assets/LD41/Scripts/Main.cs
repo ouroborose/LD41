@@ -21,7 +21,7 @@ public class Main : Singleton<Main> {
         LOADING,
         TITLE,
         STARTED,
-        FINISHED,
+        ENDED,
     }
 
     protected GameState m_state = GameState.LOADING;
@@ -37,7 +37,6 @@ public class Main : Singleton<Main> {
 
     protected void Start()
     {
-
         StartCoroutine(HandleLoading());
     }
 
@@ -61,20 +60,54 @@ public class Main : Singleton<Main> {
 
         m_state = GameState.TITLE;
         UIManager.Instance.m_blackout.Hide();
-        UIManager.Instance.m_titleDisplay.Show();
     }
 
     public void StartGame()
     {
+        if(m_state == GameState.STARTED)
+        {
+            return;
+        }
+
         for (int i = 0; i < m_players.Count; ++i)
         {
             m_players[i].m_character.Respawn();
         }
         UIManager.Instance.m_scoreDisplay.Show();
+        UIManager.Instance.m_timerDisplay.Show();
 
         m_state = GameState.STARTED;
     }
     
+    public void EndGame()
+    {
+        if(m_state == GameState.ENDED)
+        {
+            return;
+        }
+        m_state = GameState.ENDED;
+        UIManager.Instance.m_timerDisplay.Hide();
+
+        int p1Score = GetPlayerData(PlayerData.PlayerId.PLAYER_1).m_score;
+        int p2Score = GetPlayerData(PlayerData.PlayerId.PLAYER_2).m_score;
+        if(p1Score == p2Score)
+        {
+            // show tie screen
+            UIManager.Instance.m_endTieDisplay.Show();
+        }
+        else if(p1Score > p2Score)
+        {
+            // show p1 win
+            UIManager.Instance.m_endP1Display.Show();
+            CameraController.Instance.m_targets.Remove(m_players[1].m_character.transform);
+        }
+        else
+        {
+            // show p2 win
+            UIManager.Instance.m_endP2Display.Show();
+            CameraController.Instance.m_targets.Remove(m_players[0].m_character.transform);
+        }
+    }
 
     protected BaseActor CreateActor(GameObject prefab, Vector3 spawnPos)
     {
@@ -89,12 +122,11 @@ public class Main : Singleton<Main> {
     {
         switch (m_state)
         {
+            case GameState.ENDED:
             case GameState.STARTED:
                 UpdateGame();
                 break;
         }
-
-        
     }
 
     protected void UpdateGame()
@@ -113,7 +145,7 @@ public class Main : Singleton<Main> {
             }
         }
 
-        if (m_scoreDirty)
+        if (m_scoreDirty && m_state == GameState.STARTED)
         {
             m_scoreDirty = false;
             EventManager.OnScoreChange.Dispatch();

@@ -36,6 +36,7 @@ public class ScoreBar : BaseUIElement {
             return;
         }
         m_trueScore = score;
+        DOTween.Kill(m_score.rectTransform, true);
         m_score.rectTransform.DOShakePosition(m_scoreUpdateTIme, 30, 100);
     }
 
