@@ -198,7 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_player1Prefab: {fileID: 1334915249294894, guid: e3fdedcebf7319a4fbf997e17b389774,
     type: 2}
-  m_player2Prefab: {fileID: 1334915249294894, guid: e3fdedcebf7319a4fbf997e17b389774,
+  m_player2Prefab: {fileID: 1334915249294894, guid: f4d3b4e862b13473ca590d56d090ff52,
     type: 2}
   m_playerSpawnOffset: 5
   m_players:
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1673449789352130}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
   m_Name: 
