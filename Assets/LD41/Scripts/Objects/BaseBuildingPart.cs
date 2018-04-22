@@ -79,6 +79,7 @@ public class BaseBuildingPart : BaseObject {
         m_rigidbody.AddForce(breakDir * Random.Range(MIN_BREAK_FORCE, MAX_BREAK_FORCE), ForceMode.Impulse);
 
         SetColor(BROKEN_COLOR);
+        VFXManager.Instance.DoBreakPuffVFX(transform.position + transform.up * 0.5f);
     }
 
     public void PickUp(Transform holdPoint)
@@ -99,5 +100,7 @@ public class BaseBuildingPart : BaseObject {
 
         placementTile.AddBuildingPart(this);
         placementTile.Claim(owner);
+
+        VFXManager.Instance.DoPlacePuffVFX(transform.position);
     }
 }

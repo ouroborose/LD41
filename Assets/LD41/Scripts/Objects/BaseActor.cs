@@ -13,6 +13,7 @@ public class BaseActor : BaseObject {
 
     public PlayerData.PlayerId m_playerId = PlayerData.PlayerId.UNASSIGNED;
 
+
     [Header("Movement")]
     [SerializeField] protected int m_maxHp = 10;
     [SerializeField] protected float m_moveSpeed = 1.0f;
@@ -26,6 +27,12 @@ public class BaseActor : BaseObject {
 
     [SerializeField] protected Transform m_holdPoint;
     [SerializeField] protected BaseObject m_placementIndicator;
+
+
+    [Header("VFX")]
+    [SerializeField]
+    protected ParticleSystem m_movementDust;
+    protected ParticleSystem.EmissionModule m_movementDustEmission;
 
     public enum AnimationID : int
     {
@@ -51,7 +58,9 @@ public class BaseActor : BaseObject {
         public List<GameObject> m_frames;
     }
 
+    [Header("Animations")]
     [SerializeField] protected List<AnimationData> m_animations = new List<AnimationData>();
+
 
     protected Dictionary<AnimationID, AnimationData> m_animationMapping = new Dictionary<AnimationID, AnimationData>();
     protected AnimationData m_currentAnimation;
@@ -93,6 +102,8 @@ public class BaseActor : BaseObject {
         m_placementIndicator.transform.parent = null;
         m_placementIndicator.transform.rotation = Quaternion.identity;
         m_placementIndicator.gameObject.SetActive(false);
+
+        m_movementDustEmission = m_movementDust.emission;
 
         PlayAnimation(AnimationID.IDLE);
     }
@@ -306,6 +317,7 @@ public class BaseActor : BaseObject {
             Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
             impactDir.Normalize();
             pair.Value.TakeDamage(CalculateDamage(attackID), impactDir);
+            VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal, Random.Range(20, 30));
         }
         return attackID;
     }
@@ -350,6 +362,7 @@ public class BaseActor : BaseObject {
         m_rigidbody.MovePosition(toPos);
         Ray ray = new Ray(transform.position + new Vector3(0, 1f, 0), Vector3.down);
         m_isOnGround = Physics.SphereCast(ray, 0.25f, 0.8f, Utils.ENVIRONMENT_LAYER_MASK);
+        m_movementDustEmission.enabled = m_isOnGround;
     }
 
     protected void UpdateAnimationState()
