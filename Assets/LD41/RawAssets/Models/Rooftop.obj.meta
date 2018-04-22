@@ -7,12 +7,18 @@ ModelImporter:
   fileIDToRecycleName:
     100000: Rooftop
     100002: //RootNode
+    100004: default
     400000: Rooftop
     400002: //RootNode
+    400004: default
     2100000: palette
+    2100002: defaultMat
     2300000: Rooftop
+    2300002: default
     3300000: Rooftop
+    3300002: default
     4300000: Rooftop
+    4300002: default
   externalObjects: {}
   materials:
     importMaterials: 1
