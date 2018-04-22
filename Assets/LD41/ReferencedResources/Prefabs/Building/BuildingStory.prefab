@@ -174,7 +174,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 7d53f9442f7c5df4cb01d56e61d2fb9e, type: 2}
+  - {fileID: 2100000, guid: 7cde3fa70d369a043ab426ed23ea4744, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -241,7 +241,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_model: {fileID: 1607851890856856}
   m_rigidbody: {fileID: 54225343101519066}
+  m_isUsingInstancedMaterial: 1
+  m_colorPropertyName: 
   m_type: 0
   m_currentTile: {fileID: 0}
   m_maxHp: 6
+  m_owner: -1
   m_isBeingCarried: 0

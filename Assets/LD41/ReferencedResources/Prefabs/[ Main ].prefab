@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 124540891032891940}
   - component: {fileID: 81149988965280826}
   - component: {fileID: 114847099130037064}
+  - component: {fileID: 114532061975109282}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -134,11 +135,11 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!81 &81149988965280826
@@ -244,6 +245,18 @@ MonoBehaviour:
   m_action: 113
   m_jumpKey: 9
   m_character: {fileID: 0}
+--- !u!114 &114532061975109282
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1673449789352130}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: c1f11518d5cd2de41a9b2c3d7f87875c, type: 2}
 --- !u!114 &114847099130037064
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -260,6 +273,8 @@ MonoBehaviour:
   m_minDistance: 7.5
   m_xViewDistScaler: 1.25
   m_yViewDistScaler: 2
+  m_postProcessingProfile: {fileID: 11400000, guid: c1f11518d5cd2de41a9b2c3d7f87875c,
+    type: 2}
 --- !u!124 &124540891032891940
 Behaviour:
   m_ObjectHideFlags: 1

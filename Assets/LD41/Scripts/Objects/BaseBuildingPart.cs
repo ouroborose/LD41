@@ -26,6 +26,7 @@ public class BaseBuildingPart : BaseObject {
     public bool m_isBroken { get { return m_currentHp <= 0; } }
 
     protected int m_currentHp = 0;
+    protected float m_pickupDelayTimer = 0.0f;
 
     public virtual void Reset()
     {
@@ -54,10 +55,16 @@ public class BaseBuildingPart : BaseObject {
             }
             else
             {
-                DOTween.Kill(m_model.transform, true);
-                m_model.transform.DOPunchPosition(impactForce, 0.33f);
+                Shake(impactForce);
             }
         }
+    }
+
+    public void Shake(Vector3 force)
+    {
+
+        DOTween.Kill(m_model.transform, true);
+        m_model.transform.DOPunchPosition(force, 0.33f);
     }
 
     public void Break(Vector3 impactDir)

@@ -13,7 +13,12 @@ ModelImporter:
     2300000: default
     3300000: default
     4300000: default
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: palette
+    second: {fileID: 2100000, guid: 7cde3fa70d369a043ab426ed23ea4744, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

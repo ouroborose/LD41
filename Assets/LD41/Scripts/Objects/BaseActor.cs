@@ -196,7 +196,7 @@ public class BaseActor : BaseObject {
 
             if(m_heldPart == null)
             {
-                if(m_pickUpCandidate == null)
+                if(m_pickUpCandidate == null || m_attackComboCount > 0)
                 {
                     HandleAttacking();
                 }
@@ -213,7 +213,7 @@ public class BaseActor : BaseObject {
                 }
                 else
                 {
-
+                    HandlePlacementErrorFeedback();
                 }
             }
         }
@@ -249,6 +249,16 @@ public class BaseActor : BaseObject {
         m_heldPart = null;
     }
 
+    protected void HandlePlacementErrorFeedback()
+    {
+        if(m_heldPart == null)
+        {
+            return;
+        }
+
+        m_heldPart.Shake(Random.onUnitSphere * 0.2f);
+    }
+
     protected void DropPart()
     {
         if(m_heldPart == null)
@@ -280,7 +290,7 @@ public class BaseActor : BaseObject {
     protected AnimationID DoAttack(int comboCount)
     {
         AnimationID attackID = (AnimationID)((int)AnimationID.ATTACK_1 + comboCount);
-        Debug.Log(attackID);
+        //Debug.Log(attackID);
         PlayAnimation(attackID, true);
         MoveToward(transform.forward);
         

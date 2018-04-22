@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 public class CameraController : Singleton<CameraController> {
     public List<Transform> m_targets;
@@ -10,6 +11,9 @@ public class CameraController : Singleton<CameraController> {
 
     public float m_xViewDistScaler = 1.0f;
     public float m_yViewDistScaler = 1.5f;
+
+
+    public PostProcessingProfile m_postProcessingProfile;
 
     protected void LateUpdate()
     {
@@ -42,7 +46,11 @@ public class CameraController : Singleton<CameraController> {
 
         float xViewDist = (bounds.max.x - bounds.min.x) * m_xViewDistScaler;
         float yViewDist = (bounds.max.y - bounds.min.y) * m_yViewDistScaler;
-        Vector3 goalPos = center - transform.forward * Mathf.Max(m_minDistance, xViewDist, yViewDist);
+        float dist = Mathf.Max(m_minDistance, xViewDist, yViewDist);
+        Vector3 goalPos = center - transform.forward * dist;
+        var depthOfFieldSettings = m_postProcessingProfile.depthOfField.settings;
+        depthOfFieldSettings.focusDistance = dist + 0.5f;
+        m_postProcessingProfile.depthOfField.settings = depthOfFieldSettings;
         transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime / m_movementTime);
     }
 }
