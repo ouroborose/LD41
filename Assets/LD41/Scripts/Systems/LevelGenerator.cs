@@ -118,7 +118,6 @@ public class LevelGenerator : Singleton<LevelGenerator> {
 
         MeshFilter[] meshFilters = m_tilesContainer.GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-        Debug.Log(meshFilters.Length);
         int i = 0;
         while (i < meshFilters.Length)
         {

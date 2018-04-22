@@ -60,6 +60,16 @@ public class Main : Singleton<Main> {
         m_players[1].m_character = player2;
 
         yield return new WaitForSeconds(1.0f);
+
+        m_state = GameState.TITLE;
+    }
+
+    public void StartGame()
+    {
+        for (int i = 0; i < m_players.Count; ++i)
+        {
+            m_players[i].m_character.Respawn();
+        }
         UIManager.Instance.m_scoreDisplay.Show();
 
         m_state = GameState.STARTED;

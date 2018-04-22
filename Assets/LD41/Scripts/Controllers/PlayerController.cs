@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour {
     public KeyCode m_rightKey = KeyCode.RightArrow;
     public KeyCode m_leftKey = KeyCode.LeftArrow;
 
-    public KeyCode m_action = KeyCode.Z;
+    public KeyCode m_actionKey = KeyCode.Z;
     public KeyCode m_jumpKey = KeyCode.X;
 
 
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour {
             m_character.Jump();
         }
 
-        if(Input.GetKeyDown(m_action))
+        if(Input.GetKeyDown(m_actionKey))
         {
             m_character.DoAction();
         }

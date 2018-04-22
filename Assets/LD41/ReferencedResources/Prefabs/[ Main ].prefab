@@ -219,8 +219,10 @@ MonoBehaviour:
   m_playerDatas:
   - m_color: {r: 0, g: 0, b: 1, a: 1}
     m_score: 0
+    m_player: {fileID: 114421899704054894}
   - m_color: {r: 1, g: 0, b: 0, a: 1}
     m_score: 0
+    m_player: {fileID: 114405353260711516}
 --- !u!114 &114405353260711516
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -236,7 +238,7 @@ MonoBehaviour:
   m_downKey: 274
   m_rightKey: 275
   m_leftKey: 276
-  m_action: 46
+  m_actionKey: 46
   m_jumpKey: 44
   m_character: {fileID: 0}
 --- !u!114 &114421899704054894
@@ -254,7 +256,7 @@ MonoBehaviour:
   m_downKey: 115
   m_rightKey: 100
   m_leftKey: 97
-  m_action: 113
+  m_actionKey: 113
   m_jumpKey: 9
   m_character: {fileID: 0}
 --- !u!114 &114847099130037064

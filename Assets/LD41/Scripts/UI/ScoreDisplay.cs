@@ -52,7 +52,7 @@ public class ScoreDisplay : BaseUIElement
 
         if (!instant)
         {
-            m_barHolder.DOShakePosition(2.0f, 50, 100);
+            m_barHolder.DOShakePosition(2.0f, 50, 100).SetDelay(m_transitionInDelay);
         }
     }
 

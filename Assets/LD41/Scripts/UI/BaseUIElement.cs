@@ -4,6 +4,15 @@ using UnityEngine;
 using DG.Tweening;
 
 public class BaseUIElement : MonoBehaviour {
+    public enum TransitionMethod
+    {
+        MOVE,
+        SCALE,
+        CUSTOM,
+    }
+
+    public TransitionMethod m_transitionMethod = TransitionMethod.SCALE;
+
     public float m_transitionInTime = 0.33f;
     public float m_transitionInDelay = 0.0f;
     public Ease m_transitionInEase = Ease.InOutSine;
@@ -20,11 +29,30 @@ public class BaseUIElement : MonoBehaviour {
         DOTween.Kill(transform);
         if (instant)
         {
-            transform.localScale = Vector3.one;
+            switch(m_transitionMethod)
+            {
+                case TransitionMethod.MOVE:
+                    rectTransform.localPosition = Vector3.zero;
+                    break;
+                case TransitionMethod.SCALE:
+                    transform.localScale = Vector3.one;
+                    break;
+            }
             return;
         }
-        transform.DOScale(1.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
+
+        switch (m_transitionMethod)
+        {
+            case TransitionMethod.MOVE:
+                rectTransform.DOLocalMoveY(0.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
+                break;
+            case TransitionMethod.SCALE:
+                transform.DOScale(1.0f, m_transitionInTime).SetEase(m_transitionInEase).SetDelay(m_transitionInDelay);
+                break;
+        }
+
     }
+
 
     public virtual void Hide(bool instant = false)
     {
@@ -32,9 +60,26 @@ public class BaseUIElement : MonoBehaviour {
         if (instant)
         {
             gameObject.SetActive(false);
-            transform.localScale = Vector3.zero;
+            switch (m_transitionMethod)
+            {
+                case TransitionMethod.MOVE:
+                    rectTransform.localPosition = new Vector3(0, Screen.height * 2, 0);
+                    break;
+                case TransitionMethod.SCALE:
+                    transform.localScale = Vector3.zero;
+                    break;
+            }
             return;
         }
-        transform.DOScale(0.0f, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(()=>gameObject.SetActive(false));
+
+        switch (m_transitionMethod)
+        {
+            case TransitionMethod.MOVE:
+                rectTransform.DOLocalMoveY(Screen.height * 2, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
+                break;
+            case TransitionMethod.SCALE:
+                transform.DOScale(0.0f, m_transitionOutTime).SetEase(m_transitionOutEase).SetDelay(m_transitionOutDelay).OnComplete(() => gameObject.SetActive(false));
+                break;
+        }
     }
 }

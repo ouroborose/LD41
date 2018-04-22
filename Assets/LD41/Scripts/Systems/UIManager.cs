@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : Singleton<UIManager> {
     public ScoreDisplay m_scoreDisplay;
+    public TitleDisplay m_titleDisplay;
+    public EndDisplay m_endDisplay;
+    public ButtonMappingsDisplay m_buttomMappingDisplay;
 
     protected override void Awake()
     {
@@ -18,8 +21,10 @@ public class UIManager : Singleton<UIManager> {
 
     protected void Start()
     {
+        m_endDisplay.Hide(true);
+        m_buttomMappingDisplay.Hide(true);
         m_scoreDisplay.Hide(true);
-        //m_scoreDisplay.Show();
+        m_titleDisplay.Show(true);
     }
 
     bool m_scoreDisplayVisible = true;
