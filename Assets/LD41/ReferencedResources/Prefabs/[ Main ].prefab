@@ -163,7 +163,7 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -203,6 +203,11 @@ MonoBehaviour:
   m_players:
   - {fileID: 114421899704054894}
   - {fileID: 114405353260711516}
+  m_playerDatas:
+  - m_color: {r: 0, g: 0, b: 1, a: 1}
+    m_score: 0
+  - m_color: {r: 1, g: 0, b: 0, a: 1}
+    m_score: 0
 --- !u!114 &114405353260711516
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -252,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_targets: []
   m_movementTime: 0.25
-  m_minDistance: 5
+  m_minDistance: 7.5
   m_xViewDistScaler: 1.25
   m_yViewDistScaler: 2
 --- !u!124 &124540891032891940

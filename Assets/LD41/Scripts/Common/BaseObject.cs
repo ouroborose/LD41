@@ -4,18 +4,29 @@ using UnityEngine;
 
 public class BaseObject : MonoBehaviour {
     public static List<BaseObject> s_allObjects = new List<BaseObject>();
-    
+    public static MaterialPropertyBlock s_sharedMaterialPropertyBlock;
+    public readonly int COLOR_PROPERTY_ID = Shader.PropertyToID("_Color");
+
     public GameObject m_model;
     public Rigidbody m_rigidbody;
 
-    public Renderer[] m_renderers { get; protected set; }
+    protected float m_originallMass;
+    protected float m_originalDrag;
+    protected float m_originalAngularDrag;
 
+    public Renderer[] m_renderers { get; protected set; }
+    
     protected Color[] m_originalColors;
     protected bool m_colorsModified = false;
 
     protected virtual void Awake()
     {
         s_allObjects.Add(this);
+
+        if(s_sharedMaterialPropertyBlock == null)
+        {
+            s_sharedMaterialPropertyBlock = new MaterialPropertyBlock();
+        }
 
         if(m_model == null)
         {
@@ -27,13 +38,20 @@ public class BaseObject : MonoBehaviour {
             m_rigidbody = GetComponentInChildren<Rigidbody>(true);
         }
 
-        m_renderers = m_model.GetComponentsInChildren<Renderer>(true);
+        if(m_rigidbody != null)
+        {
+            m_originallMass = m_rigidbody.mass;
+            m_originalDrag = m_rigidbody.drag;
+            m_originalAngularDrag = m_rigidbody.angularDrag;
+        }
 
-        m_originalColors = new Color[m_renderers.Length];
+        m_renderers = m_model.GetComponentsInChildren<Renderer>(true);
         
+        m_originalColors = new Color[m_renderers.Length];
         for(int i = 0; i < m_renderers.Length; ++i)
         {
-            m_originalColors[i] = m_renderers[i].sharedMaterial.color;
+            m_renderers[i].GetPropertyBlock(s_sharedMaterialPropertyBlock);
+            m_originalColors[i] = s_sharedMaterialPropertyBlock.GetColor(COLOR_PROPERTY_ID);
         }
     }
 
@@ -41,6 +59,29 @@ public class BaseObject : MonoBehaviour {
     protected virtual void OnDestroy()
     {
         s_allObjects.Remove(this);
+    }
+
+    public void RemoveRigidbody()
+    {
+        if(m_rigidbody == null)
+        {
+            return;
+        }
+
+        Destroy(m_rigidbody);
+    }
+
+    public void RestoreRigidbody()
+    {
+        if(m_rigidbody != null && m_originallMass > 0)
+        {
+            return;
+        }
+
+        m_rigidbody = gameObject.AddComponent<Rigidbody>();
+        m_rigidbody.mass = m_originallMass;
+        m_rigidbody.drag = m_originalDrag;
+        m_rigidbody.angularDrag = m_originalAngularDrag;
     }
 
     public virtual void ControlledUpdate()
@@ -57,16 +98,19 @@ public class BaseObject : MonoBehaviour {
 
         for (int i = 0; i < m_renderers.Length; ++i)
         {
-            m_renderers[i].material.color = m_originalColors[i];
+            s_sharedMaterialPropertyBlock.SetColor(COLOR_PROPERTY_ID, m_originalColors[i]);
+            m_renderers[i].SetPropertyBlock(s_sharedMaterialPropertyBlock);
         }
     }
 
     public virtual void SetColor(Color c)
     {
+        Debug.Log("setting color");
         m_colorsModified = true;
         for (int i = 0; i < m_renderers.Length; ++i)
         {
-            m_renderers[i].material.color = c;
+            s_sharedMaterialPropertyBlock.SetColor(COLOR_PROPERTY_ID, c);
+            m_renderers[i].SetPropertyBlock(s_sharedMaterialPropertyBlock);
         }
     }
 }

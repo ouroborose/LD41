@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BaseActor : BaseObject {
     public static RaycastHit[] s_sharedHits = new RaycastHit[50];
@@ -34,6 +35,7 @@ public class BaseActor : BaseObject {
         HOLD_IDLE,
         HOLD_WALK,
         JUMP,
+        PICK_UP,
     }
     
     [System.Serializable]
@@ -112,7 +114,7 @@ public class BaseActor : BaseObject {
         m_actorsInRange.Clear();
 
         s_sharedRay = new Ray(transform.position + Vector3.up * 0.75f, transform.forward);
-        s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, 0.45f, s_sharedHits, m_hitRange);
+        s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, 0.3f, s_sharedHits, m_hitRange);
 
         float bestPartValue = float.MaxValue;
 
@@ -126,7 +128,7 @@ public class BaseActor : BaseObject {
             }
 
             BaseBuildingPart part = obj as BaseBuildingPart;
-            if(part != null)
+            if(part != null && !part.m_isBeingCarried)
             {
                 m_buildingPartsInRange.Add(new KeyValuePair<RaycastHit, BaseBuildingPart>(hit, part));
                 if(m_heldPart == null && part.m_isBroken)
@@ -150,16 +152,6 @@ public class BaseActor : BaseObject {
 
     protected void UpdateAction()
     {
-        
-        if(m_heldPart == null)
-        {
-            // look for pickup
-        }
-        else
-        {
-            // look for placement tile
-        }
-
         m_actionDelayTimer -= Time.deltaTime;
         if (m_actionRequested && m_actionDelayTimer <= 0.0f)
         {
@@ -194,10 +186,38 @@ public class BaseActor : BaseObject {
 
     protected void PickUpPart(BaseBuildingPart pickup)
     {
+        if (pickup == null)
+        {
+            return;
+        }
 
+        PlayAnimation(AnimationID.PICK_UP, true);
+        m_heldPart = pickup;
+        m_heldPart.m_isBeingCarried = true;
+        m_heldPart.transform.parent = m_holdPoint;
+        m_heldPart.transform.DOLocalMove(Vector3.zero, 0.25f, true).SetDelay(0.25f);
+        m_heldPart.transform.DOLocalRotate(Vector3.zero, 0.25f);
+        m_heldPart.RemoveRigidbody();
+        m_actionDelayTimer = 0.5f;
     }
 
     protected void PlacePart()
+    {
+        if(m_heldPart == null)
+        {
+            return;
+        }
+
+        m_heldPart.m_isBeingCarried = false;
+        m_heldPart.transform.parent = null;
+        m_heldPart.RestoreRigidbody();
+        DOTween.Kill(m_heldPart.transform);
+        m_heldPart.transform.position = transform.position + transform.forward;
+        m_heldPart.transform.rotation = Utils.GetClosestAlignedRotation(m_heldPart.transform.rotation);
+        m_heldPart = null;
+    }
+
+    protected void DropPart()
     {
 
     }

@@ -21,6 +21,7 @@ public class BaseBuildingPart : BaseObject {
 
     public int m_maxHp = 3;
 
+    public bool m_isBeingCarried = false;
     public bool m_isBroken { get { return m_currentHp <= 0; } }
 
     protected int m_currentHp = 0;
@@ -72,4 +73,5 @@ public class BaseBuildingPart : BaseObject {
 
         SetColor(BROKEN_COLOR);
     }
+    
 }
