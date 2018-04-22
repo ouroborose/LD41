@@ -3,8 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelGenerator : Singleton<LevelGenerator> {
+    public static readonly int[] ROAD_INDEXES =
+    {
+        0, // Cross
+        1,1, // Striaght
+        2,2,2,2, // T
+        3,3,3,3, // Corner
+    };
 
-    public GameObject m_roadTilePrefab;
+    public static readonly Quaternion[] ROAD_ROTATIONS =
+    {
+        // Cross
+        Quaternion.Euler(0,0,0),
+        // Striaght
+        Quaternion.Euler(0,0,0),
+        Quaternion.Euler(0,90,0),
+        // T
+        Quaternion.Euler(0,0,0),
+        Quaternion.Euler(0,90,0),
+        Quaternion.Euler(0,180,0),
+        Quaternion.Euler(0,270,0),
+        // Corner
+        Quaternion.Euler(0,0,0),
+        Quaternion.Euler(0,90,0),
+        Quaternion.Euler(0,180,0),
+        Quaternion.Euler(0,270,0),
+    };
+
+    public static readonly bool[][] ROAD_PATTERNS =
+    {
+        // Cross
+        new bool[]{true,true,true,true},
+        // straights
+        new bool[]{true,false,true,false},
+        new bool[]{false,true,false,true},
+        // T
+        new bool[]{true,true,false,true},
+        new bool[]{true,true,true,false},
+        new bool[]{false,true,true,true},
+        new bool[]{true,false,true,true},
+        // Corners
+        new bool[]{true,true,false,false},
+        new bool[]{false,true,true,false},
+        new bool[]{false,false,true,true},
+        new bool[]{true,false,false,true},
+    };
+
+    public static bool[] s_sharedRoadPattern = new bool[4];
+
+    public GameObject[] m_roadTilesPrefab;
+
     public GameObject m_groundTilePrefab;
 
     public GameObject m_buildingStoryPrefab;
@@ -31,8 +79,6 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         m_totalWidth = m_levelWidth * stepSize + 1;
         m_totalHeight = m_levelHeight * stepSize + 1;
         m_tiles = new BaseTile[m_totalWidth, m_totalHeight];
-
-        Debug.LogFormat("Generating Level: size: {0}", m_totalWidth);
 
         int spawnOffset = m_levelHeight / 2;
 
@@ -110,8 +156,47 @@ public class LevelGenerator : Singleton<LevelGenerator> {
 
     protected void GenerateRoad(int x, int y)
     {
-        // TODO: determine road tile based on surrounding tiles
-        CreateTile(m_roadTilePrefab, x, y);
+        if(IsOutOfBounds(x,y) || GetTile(x,y) != null)
+        {
+            return;
+        }
+
+        for(int i = 0; i < 4; ++i)
+        {
+            Vector2Int pos = Utils.CELL_DIRECTIONS[i];
+            pos.x += x;
+            pos.y += y;
+            BaseTile tile = GetTile(pos.x, pos.y);
+            s_sharedRoadPattern[i] = !IsOutOfBounds(pos.x, pos.y) && (tile == null || tile.m_type == BaseTile.TileType.ROAD);
+        }
+
+        int patternIndex = GetRoadPatternIndex(s_sharedRoadPattern);
+        //Debug.LogFormat("{0} {1} - {2} {3} {4} {5} = {6}",x, y, s_sharedRoadPattern[0], s_sharedRoadPattern[1], s_sharedRoadPattern[2], s_sharedRoadPattern[3], patternIndex);
+        CreateTile(m_roadTilesPrefab[ROAD_INDEXES[patternIndex]], x, y).transform.rotation = ROAD_ROTATIONS[patternIndex];
+    }
+
+    protected int GetRoadPatternIndex(bool[] pattern)
+    {
+        int patternIndex = 0;
+        while (patternIndex < ROAD_PATTERNS.Length)
+        {
+            int i = 0;
+            while(i < 4)
+            {
+                if (ROAD_PATTERNS[patternIndex][i] != pattern[i])
+                {
+                    break;
+                }
+                ++i;
+            }
+
+            if(i >= 4)
+            {
+                break;
+            }
+            patternIndex++;
+        }
+        return patternIndex;
     }
 
     protected BaseTile  CreateTile(GameObject prefab, int x, int y)
@@ -142,9 +227,14 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         return GetTile(x, y);
     }
 
+    public bool IsOutOfBounds(int x, int y)
+    {
+        return x < 0 || y < 0 || x >= m_totalWidth || y >= m_totalHeight;
+    }
+
     public BaseTile GetTile(int x, int y)
     {
-        if(x < 0 || y < 0 || x >= m_totalWidth || y >= m_totalHeight)
+        if(IsOutOfBounds(x,y))
         {
             return null;
         }

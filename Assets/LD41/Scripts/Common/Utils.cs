@@ -15,6 +15,7 @@ public static class Utils {
         NUM_DIRECTION = 4,
     }
 
+    public static Vector2Int[] CELL_DIRECTIONS = { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
     public static readonly Quaternion[] ALIGNED_ROTATIONS = { Quaternion.identity, Quaternion.Euler(0, 90, 0), Quaternion.Euler(0, 180, 0), Quaternion.Euler(0, 270, 0) };
 
     public static Quaternion GetClosestAlignedRotation(Quaternion rotation)

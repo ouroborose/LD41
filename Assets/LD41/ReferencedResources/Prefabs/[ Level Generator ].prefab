@@ -64,8 +64,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22e86e9e749418543ae2238bfb2daaf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_roadTilePrefab: {fileID: 1058910785546414, guid: de8da1060a3abd147a82f7948756eb5f,
-    type: 2}
+  m_roadTilesPrefab:
+  - {fileID: 1499165247313582, guid: 850a4bee731ba4080a3e37ef8ce0c982, type: 2}
+  - {fileID: 1058910785546414, guid: de8da1060a3abd147a82f7948756eb5f, type: 2}
+  - {fileID: 1524491813481876, guid: c22d279de634a4320b3f690350c7d25e, type: 2}
+  - {fileID: 1963706697044512, guid: 62fae80d8905242cf8390a185261e800, type: 2}
   m_groundTilePrefab: {fileID: 1097461330269426, guid: 4dac2ad746fc053479c0d4592dbd84c9,
     type: 2}
   m_buildingStoryPrefab: {fileID: 1291222324597982, guid: b42b336a82f30dd4f89cbf1a10772bdc,

@@ -277,11 +277,6 @@ Prefab:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 223965141967516534, guid: 5bc7ceac52f3af04497dd9472a5c1784,
-        type: 2}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5bc7ceac52f3af04497dd9472a5c1784, type: 2}
   m_IsPrefabParent: 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class Main : Singleton<Main> {
 
@@ -19,6 +20,9 @@ public class Main : Singleton<Main> {
     {
         base.Awake();
 
+
+        DOTween.Init(true, true);
+        Camera.main.eventMask = ~Camera.main.eventMask;
         SceneManager.LoadScene(1, LoadSceneMode.Additive);
     }
 
@@ -84,7 +88,7 @@ public class Main : Singleton<Main> {
         {
             return;
         }
-        Debug.LogFormat("Score Change {0}: {1}", playerId, scoreDelta);
+        //Debug.LogFormat("Score Change {0}: {1}", playerId, scoreDelta);
 
         PlayerData player = GetPlayerData(playerId);
         if(player != null)

@@ -50,13 +50,12 @@ public class BaseTile : BaseObject {
         bool roofRemoved = part.m_type == BaseBuildingPart.BuildingPartType.Roof;
         int scoreValue = start + 1;
         int scoreLost = -scoreValue;
-        Debug.Log(scoreLost);
+
         RemoveBuildingPart(part);
         while(start < m_buildingParts.Count)
         {
             scoreValue++;
             scoreLost -= scoreValue;
-            Debug.Log(scoreLost);
 
             part = m_buildingParts[start];
             if(part.m_type == BaseBuildingPart.BuildingPartType.Roof)

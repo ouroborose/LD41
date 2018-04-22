@@ -14,6 +14,14 @@ public class CameraController : Singleton<CameraController> {
 
 
     public PostProcessingProfile m_postProcessingProfile;
+    protected Bounds m_bounds = new Bounds();
+    protected DepthOfFieldModel.Settings m_depthOfFieldSettings;
+
+
+    protected void Start()
+    {
+        m_depthOfFieldSettings = m_postProcessingProfile.depthOfField.settings;
+    }
 
     protected void LateUpdate()
     {
@@ -24,33 +32,24 @@ public class CameraController : Singleton<CameraController> {
         }
 
         Vector3 center = Vector3.zero;
-        Bounds bounds = new Bounds();
+        m_bounds.extents = Vector3.zero;
         for (int i = 0; i < targetCount; ++i)
         {
             center += m_targets[i].position;
             Vector3 localPos = transform.InverseTransformPoint(m_targets[i].position);
-            bounds.Encapsulate(localPos);
-            /*
-            if(localPos.x < minLocalX)
-            {
-                minLocalX = localPos.x;
-            }
-
-            if(localPos.x > maxLocalX)
-            {
-                maxLocalX = localPos.x;
-            }
-            */
+            m_bounds.Encapsulate(localPos);
         }
         center /= targetCount;
 
-        float xViewDist = (bounds.max.x - bounds.min.x) * m_xViewDistScaler;
-        float yViewDist = (bounds.max.y - bounds.min.y) * m_yViewDistScaler;
-        float dist = Mathf.Max(m_minDistance, xViewDist, yViewDist);
+        Vector3 min = m_bounds.min;
+        Vector3 max = m_bounds.max;
+        
+        float xViewDist = (max.x - min.x) * m_xViewDistScaler;
+        float yViewDist = (max.y - min.y) * m_yViewDistScaler;
+        float dist = Mathf.Max(m_minDistance, Mathf.Max(xViewDist, yViewDist));
         Vector3 goalPos = center - transform.forward * dist;
-        var depthOfFieldSettings = m_postProcessingProfile.depthOfField.settings;
-        depthOfFieldSettings.focusDistance = dist + 0.5f;
-        m_postProcessingProfile.depthOfField.settings = depthOfFieldSettings;
+        m_depthOfFieldSettings.focusDistance = dist + 0.5f;
+        m_postProcessingProfile.depthOfField.settings = m_depthOfFieldSettings;
         transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime / m_movementTime);
     }
 }
