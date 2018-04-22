@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 124540891032891940}
   - component: {fileID: 81149988965280826}
   - component: {fileID: 114847099130037064}
-  - component: {fileID: 114532061975109282}
+  - component: {fileID: 114255120618752194}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -130,7 +130,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967243
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -164,20 +164,20 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
-    m_Resolution: -1
+    m_Type: 0
+    m_Resolution: 0
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NormalBias: 0
+    m_NearPlane: 0.1
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 769
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -185,6 +185,18 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &114255120618752194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1673449789352130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: c1f11518d5cd2de41a9b2c3d7f87875c, type: 2}
 --- !u!114 &114272720499969132
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -245,18 +257,6 @@ MonoBehaviour:
   m_action: 113
   m_jumpKey: 9
   m_character: {fileID: 0}
---- !u!114 &114532061975109282
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1673449789352130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: c1f11518d5cd2de41a9b2c3d7f87875c, type: 2}
 --- !u!114 &114847099130037064
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -271,7 +271,7 @@ MonoBehaviour:
   m_targets: []
   m_movementTime: 0.25
   m_minDistance: 7.5
-  m_xViewDistScaler: 1.25
+  m_xViewDistScaler: 1.15
   m_yViewDistScaler: 2
   m_postProcessingProfile: {fileID: 11400000, guid: c1f11518d5cd2de41a9b2c3d7f87875c,
     type: 2}

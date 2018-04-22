@@ -13,8 +13,8 @@ public class CameraController : Singleton<CameraController> {
     public float m_yViewDistScaler = 1.5f;
 
 
-    public PostProcessingProfile m_postProcessingProfile;
     protected Bounds m_bounds = new Bounds();
+    public PostProcessingProfile m_postProcessingProfile;
     protected DepthOfFieldModel.Settings m_depthOfFieldSettings;
 
 

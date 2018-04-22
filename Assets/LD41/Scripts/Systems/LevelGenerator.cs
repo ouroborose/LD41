@@ -58,6 +58,9 @@ public class LevelGenerator : Singleton<LevelGenerator> {
     public GameObject m_buildingStoryPrefab;
     public GameObject m_buildingRoofPrefab;
 
+    public Transform m_tilesContainer;
+    public Transform m_buildingsContainer;
+
     public int m_levelWidth = 4;
     public int m_levelHeight = 3;
 
@@ -69,17 +72,21 @@ public class LevelGenerator : Singleton<LevelGenerator> {
 
     [SerializeField] protected BoxCollider m_groundCollider;
 
+    public int m_stepSize { get; protected set; }
     public int m_totalWidth { get; protected set; }
     public int m_totalHeight { get; protected set; }
-    protected BaseTile[,] m_tiles;
+    protected BaseTile[] m_tiles;
+
+    public void Init()
+    {
+        m_stepSize = m_cityBlockSize + 1;
+        m_totalWidth = m_levelWidth * m_stepSize + 1;
+        m_totalHeight = m_levelHeight * m_stepSize + 1;
+        m_tiles = new BaseTile[m_totalWidth * m_totalHeight];
+    }
 
     public void GenerateLevel()
     {
-        int stepSize = m_cityBlockSize + 1;
-        m_totalWidth = m_levelWidth * stepSize + 1;
-        m_totalHeight = m_levelHeight * stepSize + 1;
-        m_tiles = new BaseTile[m_totalWidth, m_totalHeight];
-
         int spawnOffset = m_levelHeight / 2;
 
         // build blocks
@@ -88,7 +95,7 @@ public class LevelGenerator : Singleton<LevelGenerator> {
             for (int blockY = 0; blockY < m_levelHeight; ++blockY)
             {
                 bool generateBuildings = !((blockX == 0 && blockY == spawnOffset) || (blockX == m_levelWidth-1 && blockY == m_levelHeight - 1 - spawnOffset));
-                GenerateCityBlock(blockX * stepSize, blockY * stepSize, m_cityBlockSize, generateBuildings);
+                GenerateCityBlock(blockX * m_stepSize, blockY * m_stepSize, m_cityBlockSize, generateBuildings);
             }
         }
 
@@ -104,8 +111,24 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         m_groundCollider.center = new Vector3(Mathf.FloorToInt(m_totalWidth * 0.5f), -0.5f, Mathf.FloorToInt(m_totalHeight * 0.5f));
         m_groundCollider.size = new Vector3(m_totalWidth, 1, m_totalHeight);
 
-        GetPlayer1SpawnTile().SetColor(Color.blue);
-        GetPlayer2SpawnTile().SetColor(Color.red);
+        BaseTile player1Tile = GetPlayer1SpawnTile();
+        player1Tile.SetColor(Color.blue);
+        BaseTile player2Tile = GetPlayer2SpawnTile();
+        player2Tile.SetColor(Color.red);
+
+        MeshFilter[] meshFilters = m_tilesContainer.GetComponentsInChildren<MeshFilter>();
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+        Debug.Log(meshFilters.Length);
+        int i = 0;
+        while (i < meshFilters.Length)
+        {
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            meshFilters[i].gameObject.SetActive(false);
+            i++;
+        }
+        m_tilesContainer.gameObject.AddComponent<MeshFilter>().mesh = new Mesh();
+        m_tilesContainer.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
     }
 
     protected void GenerateCityBlock(int x, int y, int size, bool generateBuildings)
@@ -140,14 +163,14 @@ public class LevelGenerator : Singleton<LevelGenerator> {
 
         for(int i = 0; i < height; ++i)
         {
-            GameObject storyObj = Instantiate(m_buildingStoryPrefab, transform);
+            GameObject storyObj = Instantiate(m_buildingStoryPrefab, m_buildingsContainer);
             BaseBuildingPart story = storyObj.GetComponent<BaseBuildingPart>();
             tile.AddBuildingPart(story);
         }
 
         if(addRoof)
         {
-            GameObject roofObj = Instantiate(m_buildingRoofPrefab, transform);
+            GameObject roofObj = Instantiate(m_buildingRoofPrefab, m_buildingsContainer);
             BaseBuildingPart roof = roofObj.GetComponent<BaseBuildingPart>();
             roof.transform.rotation = Utils.GetRandomAlignedRotation();
             tile.AddBuildingPart(roof);
@@ -199,17 +222,23 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         return patternIndex;
     }
 
+    protected int GetTileIndex(int x, int y)
+    {
+        return y * m_totalWidth + x;
+    }
+
     protected BaseTile  CreateTile(GameObject prefab, int x, int y)
     {
-        if (m_tiles[x, y] != null)
+        int index = GetTileIndex(x, y);
+        if (IsOutOfBounds(x,y) || m_tiles[index] != null)
         {
             return null;
         }
 
-        GameObject tileObj = Instantiate(prefab, transform);
+        GameObject tileObj = Instantiate(prefab, m_tilesContainer);
         tileObj.transform.position = new Vector3(x, 0.0f, y);
         BaseTile tile = tileObj.GetComponent<BaseTile>();
-        m_tiles[x, y] = tile;
+        m_tiles[index] = tile;
         return tile;
     }
 
@@ -238,7 +267,7 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         {
             return null;
         }
-        return m_tiles[x, y];
+        return m_tiles[GetTileIndex(x, y)];
     }
 
     public BaseTile GetClosestTile(Vector3 pos)

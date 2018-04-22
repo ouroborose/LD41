@@ -19,7 +19,7 @@ public class UIManager : Singleton<UIManager> {
     protected void Start()
     {
         m_scoreDisplay.Hide(true);
-        m_scoreDisplay.Show();
+        //m_scoreDisplay.Show();
     }
 
     bool m_scoreDisplayVisible = true;
