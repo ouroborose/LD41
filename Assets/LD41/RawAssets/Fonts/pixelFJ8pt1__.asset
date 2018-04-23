@@ -11,19 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: -667331979, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   m_Name: pixelFJ8pt1__
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 1981500425
   material: {fileID: 21539184528451826}
-  materialHashCode: 0
+  materialHashCode: 2129594594
   fontAssetType: 2
   m_fontInfo:
     Name: pixelFJ8pt1
     PointSize: 8
-    Scale: 0
+    Scale: 1
     CharacterCount: 95
     LineHeight: 9
     Baseline: 0
     Ascender: 7
-    CapHeight: 0
+    CapHeight: 7
     Descender: -2
     CenterLine: 0
     SuperscriptOffset: 7
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 0.16
     strikethrough: 1.8181819
     strikethroughThickness: 0.16
-    TabWidth: 0
+    TabWidth: 40
     Padding: 5
     AtlasWidth: 256
     AtlasHeight: 128
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 5
     y: 123
-    width: 0
-    height: 0
+    width: 4
+    height: 9
     xOffset: 0
-    yOffset: 0
+    yOffset: 7
     xAdvance: 4
     scale: 1
   - id: 33
@@ -949,7 +949,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: pixelFJ8pt1__ Material
   m_Shader: {fileID: 4800000, guid: edfcf888cd11d9245b91d2883049a57e, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: UNITY_UI_CLIP_RECT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

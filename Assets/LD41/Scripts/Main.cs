@@ -78,6 +78,7 @@ public class Main : Singleton<Main> {
         UIManager.Instance.m_timerDisplay.Show();
 
         m_state = GameState.STARTED;
+        AudioManager.Instance.PlayStageMusic();
     }
     
     public void EndGame()

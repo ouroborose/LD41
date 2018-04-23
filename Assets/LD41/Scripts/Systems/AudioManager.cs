@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class AudioManager : Singleton<AudioManager> {
     [SerializeField] protected AudioSource m_bgMusic;
-    [SerializeField] protected AudioSource m_panicMusic;
+
+    [SerializeField] protected AudioClip m_panicMusic;
+    [SerializeField] protected AudioClip m_stageMusic;
 
     [SerializeField] protected ObjectPool m_audioSourcePool;
 
     [SerializeField] protected AudioClip[] m_explosionClips;
 
-    public void StartPanicMusic()
+    public void PlayPanicMusic()
     {
-        m_panicMusic.Play();
-        m_bgMusic.Stop();
+        PlayBGMusic(m_panicMusic);
+    }
+
+    public void PlayStageMusic()
+    {
+        PlayBGMusic(m_stageMusic);
+    }
+
+    public void PlayBGMusic(AudioClip music)
+    {
+        m_bgMusic.clip = music;
+        m_bgMusic.Play();
     }
 
     public void PlayExplosionOneShot(float volume = 1.0f)

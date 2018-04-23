@@ -25,7 +25,7 @@ public class TimerDisplay : BaseUIElement {
         if(!m_panicStarted && m_timeLeft <= m_panicThreshold)
         {
             m_panicStarted = true;
-            AudioManager.Instance.StartPanicMusic();
+            AudioManager.Instance.PlayPanicMusic();
             m_timer.color = Color.red;
             rectTransform.DOPunchPosition(Vector3.right * 5f, m_transitionOutDelay, 40);
         }
