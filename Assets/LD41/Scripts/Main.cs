@@ -69,6 +69,7 @@ public class Main : Singleton<Main> {
         {
             return;
         }
+        AudioManager.Instance.StartStageMusic();
 
         for (int i = 0; i < m_players.Count; ++i)
         {
