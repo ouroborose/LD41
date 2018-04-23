@@ -73,6 +73,8 @@ public class BaseTile : BaseObject {
             } 
         }
 
+        AudioManager.Instance.PlayExplosionOneShot();
+
         Main.Instance.ModifyScore(m_owner, scoreLost);
     }
 

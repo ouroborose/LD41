@@ -1645,7 +1645,7 @@ MonoBehaviour:
   m_playerId: -1
   m_maxHp: 10
   m_moveSpeed: 3
-  m_jumpVelocity: 12
+  m_jumpVelocity: 15
   m_hitRange: 0.5
   m_actionDelayTime: 0.1
   m_comboTimeThreshold: 0.5
@@ -1657,6 +1657,14 @@ MonoBehaviour:
   m_holdActivatedParticles: {fileID: 198269783226891646}
   m_specialAttackReadyParticles: {fileID: 198516883091960328}
   m_specialAttackParticles: {fileID: 198054479397756528}
+  m_hurtClip: {fileID: 8300000, guid: 445f6d6ae40933d4ca3917ba89cc01e4, type: 3}
+  m_attackClip: {fileID: 8300000, guid: b8b46c45b73828b46adbb45358f22769, type: 3}
+  m_specialAttackClip: {fileID: 0}
+  m_pickUpClip: {fileID: 0}
+  m_putDownClip: {fileID: 0}
+  m_throwClip: {fileID: 0}
+  m_jumpClip: {fileID: 8300000, guid: b24be714cb9772a4a82bcaa69cc6e83f, type: 3}
+  m_landClip: {fileID: 0}
   m_animations:
   - m_id: 0
     m_loops: 1
@@ -1719,6 +1727,7 @@ MonoBehaviour:
     m_frames:
     - {fileID: 1098306774965478}
     - {fileID: 1934732685195150}
+  m_run: 0
 --- !u!136 &136546472780701360
 CapsuleCollider:
   m_ObjectHideFlags: 1

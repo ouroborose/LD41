@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour {
             moveDir.Normalize();
             // detect double tap
             
-            if (m_lastMoveDir == Vector3.zero && Vector3.Dot(m_lastNoneZeroMoveDir,moveDir) > 0.9f )
+            if (m_character.m_isOnGround && m_lastMoveDir == Vector3.zero && Vector3.Dot(m_lastNoneZeroMoveDir,moveDir) > 0.9f )
             {
                 m_character.m_run = true;
             }

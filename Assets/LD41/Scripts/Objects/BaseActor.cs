@@ -46,6 +46,16 @@ public class BaseActor : BaseObject {
 
     [SerializeField] protected ParticleSystem m_specialAttackParticles;
 
+    [Header("Audio")]
+    [SerializeField] protected AudioClip m_hurtClip;
+    [SerializeField] protected AudioClip m_attackClip;
+    [SerializeField] protected AudioClip m_specialAttackClip;
+    [SerializeField] protected AudioClip m_pickUpClip;
+    [SerializeField] protected AudioClip m_putDownClip;
+    [SerializeField] protected AudioClip m_throwClip;
+    [SerializeField] protected AudioClip m_jumpClip;
+    [SerializeField] protected AudioClip m_landClip;
+
     public enum AnimationID : int
     {
         IDLE = 0,
@@ -90,7 +100,7 @@ public class BaseActor : BaseObject {
 
     protected Vector3 m_moveDir;
     public bool m_run = false;
-    protected bool m_isOnGround = false;
+    public bool m_isOnGround { get; protected set; }
     protected bool m_jumpRequested = false;
     protected bool m_actionRequested = false;
 
@@ -363,6 +373,7 @@ public class BaseActor : BaseObject {
         m_heldPart = pickup;
         m_heldPart.PickUp(m_holdPoint);
         m_actionDelayTimer = 0.5f;
+        AudioManager.Instance.PlayOneShot(m_pickUpClip);
     }
 
     protected void PlacePart()
@@ -372,6 +383,7 @@ public class BaseActor : BaseObject {
             return;
         }
 
+        AudioManager.Instance.PlayOneShot(m_putDownClip);
         m_heldPart.Place(m_placementTile, m_playerId);
         m_heldPart = null;
     }
@@ -404,6 +416,7 @@ public class BaseActor : BaseObject {
             return;
         }
 
+        AudioManager.Instance.PlayOneShot(m_throwClip);
         m_heldPart.Throw(this, transform.forward * m_throwForce);
         m_heldPart = null;
     }
@@ -448,6 +461,16 @@ public class BaseActor : BaseObject {
             pair.Value.TakeDamage(damage, impactDir+ additionalImpact);
             VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal);
         }
+
+        if (m_buildingPartsInRange.Count > 0 || m_actorsInRange.Count > 0) 
+        {
+            AudioManager.Instance.PlayOneShot(m_attackClip);
+        }
+        else
+        {
+            AudioManager.Instance.PlayOneShot(m_attackClip, 0.25f);
+        }
+
     }
 
     protected int CalculateDamage(AnimationID attackID)
@@ -466,6 +489,7 @@ public class BaseActor : BaseObject {
             m_jumpRequested = false;
             if(m_isOnGround)
             {
+                AudioManager.Instance.PlayOneShot(m_jumpClip);
                 m_rigidbody.AddForce(Vector3.up * m_jumpVelocity, ForceMode.Impulse);
             }
         }
@@ -495,9 +519,16 @@ public class BaseActor : BaseObject {
             m_rigidbody.MoveRotation(Quaternion.LookRotation(m_moveDir));
         }
 
+        bool wasOnGround = m_isOnGround;
         m_rigidbody.MovePosition(toPos);
         Ray ray = new Ray(transform.position + new Vector3(0, 1f, 0), Vector3.down);
         m_isOnGround = Physics.SphereCast(ray, 0.25f, 0.8f, Utils.ENVIRONMENT_LAYER_MASK);
+
+        if(!wasOnGround && m_isOnGround)
+        {
+            AudioManager.Instance.PlayOneShot(m_landClip);
+        }
+
         m_movementDustEmission.enabled = m_isOnGround;
     }
 
@@ -637,5 +668,7 @@ public class BaseActor : BaseObject {
         m_rigidbody.AddForce(impactDir * KNOCK_BACK_FORCE * damage, ForceMode.Impulse);
         DropPart();
         CancelAction();
+
+        AudioManager.Instance.PlayOneShot(m_hurtClip);
     }
 }
