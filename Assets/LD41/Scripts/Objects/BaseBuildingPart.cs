@@ -153,7 +153,6 @@ public class BaseBuildingPart : BaseObject {
         if(part != null)
         {
             part.TakeDamage(3, -collision.contacts[0].normal);
-            m_thrower = null;
         }
         else
         {
@@ -161,7 +160,6 @@ public class BaseBuildingPart : BaseObject {
             if(actor != null && m_thrower != actor)
             {
                 actor.TakeDamage(2, -collision.contacts[0].normal);
-                m_thrower = null;
             }
         }
 
