@@ -1117,6 +1117,11 @@ Prefab:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114978167000284536, guid: af1f9f6cfd3212e4b948d2f3e8341909,
+        type: 2}
+      propertyPath: m_panicThreshold
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: af1f9f6cfd3212e4b948d2f3e8341909, type: 2}
   m_IsPrefabParent: 0
