@@ -7,6 +7,8 @@ public class BaseActor : BaseObject {
     public static readonly Color PLACEMENT_ALLOWED_COLOR = new Color(0, 1, 0, 0.5f);
     public static readonly Color PLACEMENT_NOT_ALLOWED_COLOR = new Color(1, 0, 0, 0.5f);
 
+    public const float KNOCK_BACK_FORCE = 10.0f;
+
     public static RaycastHit[] s_sharedHits = new RaycastHit[50];
     public static Ray s_sharedRay = new Ray();
     public static int s_sharedHitsCount = 0;
@@ -286,7 +288,7 @@ public class BaseActor : BaseObject {
     protected void HandleAttacking()
     {
         m_timeSinceLastAttack = 0.0f;
-        AnimationID attackID = DoAttack(m_attackComboCount);
+        DoAttack(m_attackComboCount);
         m_attackComboCount++;
     }
 
@@ -311,7 +313,7 @@ public class BaseActor : BaseObject {
 
         for(int i = 0; i < m_actorsInRange.Count; ++i)
         {
-            KeyValuePair<RaycastHit, BaseBuildingPart> pair = m_buildingPartsInRange[i];
+            KeyValuePair<RaycastHit, BaseActor> pair = m_actorsInRange[i];
             Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
             impactDir.Normalize();
             pair.Value.TakeDamage(damage, impactDir);
@@ -481,6 +483,6 @@ public class BaseActor : BaseObject {
 
     public void TakeDamage(int damage, Vector3 impactDir)
     {
-
+        m_rigidbody.AddForce(impactDir * KNOCK_BACK_FORCE * damage, ForceMode.Impulse);
     }
 }

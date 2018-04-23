@@ -22,6 +22,7 @@ public class Main : Singleton<Main> {
         TITLE,
         STARTED,
         ENDED,
+        RESTARTING,
     }
 
     protected GameState m_state = GameState.LOADING;
@@ -175,5 +176,25 @@ public class Main : Singleton<Main> {
             player.m_score += scoreDelta;
             m_scoreDirty = true;
         }
+    }
+
+    public void RestartGame()
+    {
+        if(m_state == GameState.RESTARTING)
+        {
+            return;
+        }
+
+        m_state = GameState.RESTARTING;
+        StartCoroutine(HandleRestartGane());
+    }
+
+    protected IEnumerator HandleRestartGane()
+    {
+        BaseUIElement blackout = UIManager.Instance.m_blackout;
+        blackout.Show();
+        yield return new WaitForSeconds(blackout.m_transitionInDelay + blackout.m_transitionInTime + 1.0f);
+
+        SceneManager.LoadScene(0);
     }
 }

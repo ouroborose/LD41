@@ -109,6 +109,7 @@ MonoBehaviour:
   m_timer: {fileID: 114986312009996158}
   m_started: 0
   m_timeLeft: 92
+  m_panicThreshold: 25
 --- !u!114 &114986312009996158
 MonoBehaviour:
   m_ObjectHideFlags: 1
