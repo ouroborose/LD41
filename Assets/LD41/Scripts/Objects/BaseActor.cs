@@ -169,6 +169,10 @@ public class BaseActor : BaseObject {
 
     protected void UpdateDetection(float radius , float range)
     {
+        if (m_pickUpCandidate != null)
+        {
+            m_pickUpCandidate.SetColor(BaseBuildingPart.BROKEN_COLOR);
+        }
         m_pickUpCandidate = null;
         m_placementTile = null;
         m_placementAllowed = false;
@@ -212,6 +216,12 @@ public class BaseActor : BaseObject {
             }
         }
 
+        if(m_pickUpCandidate != null)
+        {
+            m_pickUpCandidate.SetColor(Color.green);
+        }
+
+        // update placement indicator
         if(m_heldPart != null)
         {
             m_placementTile = LevelGenerator.Instance.GetClosestTile(transform.position + transform.forward);
