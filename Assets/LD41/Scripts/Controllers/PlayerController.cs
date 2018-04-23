@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour {
     protected Transform m_camTrans;
     protected float m_actionHoldTimer = 0.0f;
 
+    protected float m_lastNoneZeroMoveDirTime = 0;
+    protected Vector3 m_lastNoneZeroMoveDir;
+    protected Vector3 m_lastMoveDir;
+
     protected void Start()
     {
         m_camTrans = Camera.main.transform;
@@ -37,6 +41,7 @@ public class PlayerController : MonoBehaviour {
         Vector3 moveDir = Vector3.zero;
         Vector3 forward = Vector3.ProjectOnPlane(m_camTrans.forward, Vector3.up).normalized;
         Vector3 right = m_camTrans.right;
+        
         if (Input.GetKey(m_upKey))
         {
             moveDir += forward;
@@ -57,12 +62,24 @@ public class PlayerController : MonoBehaviour {
         if(moveDir != Vector3.zero)
         {
             moveDir.Normalize();
+            // detect double tap
+            
+            if (m_lastMoveDir == Vector3.zero && Vector3.Dot(m_lastNoneZeroMoveDir,moveDir) > 0.9f )
+            {
+                m_character.m_run = true;
+            }
         }
+        else
+        {
+            m_character.m_run = false;
+        }
+
         m_character.MoveToward(moveDir);
 
         if(Input.GetKeyDown(m_jumpKey))
         {
             m_character.Jump();
+            m_character.m_run = false;
         }
 
         if(Input.GetKeyDown(m_actionKey))
@@ -80,6 +97,13 @@ public class PlayerController : MonoBehaviour {
         if(Input.GetKeyUp(m_actionKey))
         {
             m_character.DoAction();
+            m_character.m_run = false;
+        }
+
+        m_lastMoveDir = moveDir;
+        if(m_lastMoveDir != Vector3.zero)
+        {
+            m_lastNoneZeroMoveDir = m_lastMoveDir;
         }
     }
 

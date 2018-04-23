@@ -89,6 +89,7 @@ public class BaseActor : BaseObject {
     protected float m_timeSinceLastAttack = 0.0f;
 
     protected Vector3 m_moveDir;
+    public bool m_run = false;
     protected bool m_isOnGround = false;
     protected bool m_jumpRequested = false;
     protected bool m_actionRequested = false;
@@ -296,6 +297,8 @@ public class BaseActor : BaseObject {
         m_specialAttackReadyPartieleEmission.enabled = false;
         m_actionRequested = false;
         m_jumpRequested = false;
+        m_run = false;
+        m_moveDir = Vector3.zero;
     }
 
     protected void DoHoldAction()
@@ -322,7 +325,8 @@ public class BaseActor : BaseObject {
 
     protected IEnumerator HandleSpecialAttack()
     {
-        m_specialAttackActive = true;
+        m_specialAttackActive = true;       
+
         PlayAnimation(AnimationID.ATTACK_3);
         m_specialAttackReadyParticles.Emit(100);
         yield return new WaitForSeconds(0.25f);
@@ -479,6 +483,10 @@ public class BaseActor : BaseObject {
         {
             speed *= 0.5f;
         }
+        else if(m_run)
+        {
+            speed *= 2;
+        }
         Vector3 toPos = transform.position + m_moveDir * (speed * Time.deltaTime);
         toPos.y = pos.y;
 
@@ -614,7 +622,9 @@ public class BaseActor : BaseObject {
 
     public void Respawn(bool reset = true)
     {
+        VFXManager.Instance.DoBreakPuffVFX(transform.position);
         TeleportTo(m_spawnPos);
+        VFXManager.Instance.DoBreakPuffVFX(transform.position);
         m_rigidbody.velocity = Vector3.zero;
         if(reset)
         {

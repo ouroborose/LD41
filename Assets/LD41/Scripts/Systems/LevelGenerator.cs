@@ -112,12 +112,7 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         
         m_groundCollider.center = new Vector3(Mathf.FloorToInt(m_totalWidth * 0.5f), -0.5f, Mathf.FloorToInt(m_totalHeight * 0.5f));
         m_groundCollider.size = new Vector3(m_totalWidth, 1, m_totalHeight);
-
-        BaseTile player1Tile = GetPlayer1SpawnTile();
-        player1Tile.SetColor(Color.blue);
-        BaseTile player2Tile = GetPlayer2SpawnTile();
-        player2Tile.SetColor(Color.red);
-
+        
         MeshFilter[] meshFilters = m_tilesContainer.GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
         int i = 0;
