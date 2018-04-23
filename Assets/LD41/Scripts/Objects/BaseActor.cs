@@ -33,15 +33,18 @@ public class BaseActor : BaseObject {
     [SerializeField] protected Transform m_holdPoint;
     [SerializeField] protected BaseObject m_placementIndicator;
 
-    [SerializeField] protected ParticleSystem m_holdActivatedParticles;
-    protected ParticleSystem.EmissionModule m_holdActivatedParticlesEmission;
-
-    [SerializeField] protected ParticleSystem m_specialAttackParticles;
-    protected ParticleSystem.EmissionModule m_specialAttackPartieleEmission;
 
     [Header("VFX")]
     [SerializeField] protected ParticleSystem m_movementDust;
     protected ParticleSystem.EmissionModule m_movementDustEmission;
+    
+    [SerializeField] protected ParticleSystem m_holdActivatedParticles;
+    protected ParticleSystem.EmissionModule m_holdActivatedParticlesEmission;
+
+    [SerializeField] protected ParticleSystem m_specialAttackReadyParticles;
+    protected ParticleSystem.EmissionModule m_specialAttackReadyPartieleEmission;
+
+    [SerializeField] protected ParticleSystem m_specialAttackParticles;
 
     public enum AnimationID : int
     {
@@ -90,6 +93,8 @@ public class BaseActor : BaseObject {
     protected bool m_jumpRequested = false;
     protected bool m_actionRequested = false;
 
+    public bool m_specialAttackActive { get; protected set; }
+
 
     protected BaseBuildingPart m_heldPart = null;
 
@@ -116,8 +121,10 @@ public class BaseActor : BaseObject {
         m_placementIndicator.gameObject.SetActive(false);
 
         m_holdActivatedParticlesEmission = m_holdActivatedParticles.emission;
-        m_specialAttackPartieleEmission = m_specialAttackParticles.emission;
+        m_specialAttackReadyPartieleEmission = m_specialAttackReadyParticles.emission;
         m_movementDustEmission = m_movementDust.emission;
+
+        m_specialAttackActive = false;
 
         PlayAnimation(AnimationID.IDLE);
     }
@@ -131,7 +138,7 @@ public class BaseActor : BaseObject {
     {
         base.ControlledUpdate();
 
-        UpdateDetection();
+        UpdateDetection(0.3f, m_hitRange);
         UpdateAction();
         UpdateMovement();
         UpdateAnimationState();
@@ -149,7 +156,7 @@ public class BaseActor : BaseObject {
         Respawn(false);
     }
 
-    protected void UpdateDetection()
+    protected void UpdateDetection(float radius , float range)
     {
         m_pickUpCandidate = null;
         m_placementTile = null;
@@ -159,7 +166,7 @@ public class BaseActor : BaseObject {
         m_actorsInRange.Clear();
 
         s_sharedRay = new Ray(transform.position + Vector3.up * 0.75f, transform.forward);
-        s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, 0.3f, s_sharedHits, m_hitRange);
+        s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, radius, s_sharedHits, range);
 
         float bestPartValue = float.MaxValue;
 
@@ -229,7 +236,11 @@ public class BaseActor : BaseObject {
             m_specialAttackChargeTimer += Time.deltaTime;
             if(m_specialAttackChargeTimer >= SPECIAL_CHARGE_TIME)
             {
-
+                if(!m_specialAttackReadyPartieleEmission.enabled)
+                {
+                    m_specialAttackReadyParticles.Emit(50);
+                }
+                m_specialAttackReadyPartieleEmission.enabled = true;
             }
         }
 
@@ -282,7 +293,9 @@ public class BaseActor : BaseObject {
     {
         m_holdActionActivated = false;
         m_holdActivatedParticlesEmission.enabled = false;
+        m_specialAttackReadyPartieleEmission.enabled = false;
         m_actionRequested = false;
+        m_jumpRequested = false;
     }
 
     protected void DoHoldAction()
@@ -296,8 +309,8 @@ public class BaseActor : BaseObject {
         else if (m_specialAttackChargeTimer > SPECIAL_CHARGE_TIME)
         {
             // do special attack
-
             m_actionDelayTimer = m_specialAttackActionDelay;
+            StartCoroutine(HandleSpecialAttack());
         }
         else
         {
@@ -305,6 +318,34 @@ public class BaseActor : BaseObject {
         }
 
         CancelAction();
+    }
+
+    protected IEnumerator HandleSpecialAttack()
+    {
+        m_specialAttackActive = true;
+        PlayAnimation(AnimationID.ATTACK_3);
+        m_specialAttackReadyParticles.Emit(100);
+        yield return new WaitForSeconds(0.25f);
+        if(m_specialAttackParticles != null)
+        {
+            m_specialAttackParticles.Play();
+        }
+        float timer = 0;
+        float atkTimer = 0.0f;
+        while (timer < 3.0f)
+        {
+            atkTimer -= Time.deltaTime;
+            if(atkTimer <= 0.0f)
+            {
+                atkTimer += 1.0f;
+                m_specialAttackReadyParticles.Emit(50);
+                UpdateDetection(0.75f, 3.0f);
+                HandleDealingDamage(4, Vector3.up);
+            }
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        m_specialAttackActive = false;
     }
 
     protected void PickUpPart(BaseBuildingPart pickup)
@@ -379,25 +420,30 @@ public class BaseActor : BaseObject {
 
         int damage = CalculateDamage(attackID);
 
+        HandleDealingDamage(damage);
+        return attackID;
+    }
+
+    protected void HandleDealingDamage(int damage, Vector3 additionalImpact = default(Vector3))
+    {
         for (int i = 0; i < m_buildingPartsInRange.Count; ++i)
         {
             KeyValuePair<RaycastHit, BaseBuildingPart> pair = m_buildingPartsInRange[i];
 
             Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
             impactDir.Normalize();
-            pair.Value.TakeDamage(damage, impactDir);
+            pair.Value.TakeDamage(damage, impactDir+ additionalImpact);
             VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal);
         }
 
-        for(int i = 0; i < m_actorsInRange.Count; ++i)
+        for (int i = 0; i < m_actorsInRange.Count; ++i)
         {
             KeyValuePair<RaycastHit, BaseActor> pair = m_actorsInRange[i];
             Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
             impactDir.Normalize();
-            pair.Value.TakeDamage(damage, impactDir);
+            pair.Value.TakeDamage(damage, impactDir+ additionalImpact);
             VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal);
         }
-        return attackID;
     }
 
     protected int CalculateDamage(AnimationID attackID)
@@ -547,6 +593,11 @@ public class BaseActor : BaseObject {
 
     public void ActivateHoldAction()
     {
+        if(m_holdActionActivated)
+        {
+            return;
+        }
+
         m_holdActionActivated = true;
         m_holdActivatedParticlesEmission.enabled = true;
         m_specialAttackChargeTimer = 0.0f;

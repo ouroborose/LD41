@@ -29,6 +29,11 @@ public class PlayerController : MonoBehaviour {
             return;
         }
 
+        if(m_character.m_specialAttackActive)
+        {
+            return;
+        }
+
         Vector3 moveDir = Vector3.zero;
         Vector3 forward = Vector3.ProjectOnPlane(m_camTrans.forward, Vector3.up).normalized;
         Vector3 right = m_camTrans.right;
