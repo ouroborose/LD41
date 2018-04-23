@@ -332,9 +332,8 @@ public class BaseActor : BaseObject {
         }
         float timer = 0;
         float atkTimer = 0.0f;
-        while (timer < 3.25f)
+        while (timer < 3.0f)
         {
-
             atkTimer -= Time.deltaTime;
             if(atkTimer <= 0.0f)
             {
@@ -343,7 +342,6 @@ public class BaseActor : BaseObject {
                 UpdateDetection(0.75f, 3.0f);
                 HandleDealingDamage(4, Vector3.up);
             }
-            PlayAnimation(AnimationID.PICK_UP, true);
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
