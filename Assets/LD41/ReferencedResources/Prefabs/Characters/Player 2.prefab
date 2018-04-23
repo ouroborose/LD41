@@ -1524,6 +1524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_model: {fileID: 1291442177993014}
   m_rigidbody: {fileID: 0}
+  m_hasColorProperty: 1
   m_isUsingInstancedMaterial: 0
   m_colorPropertyName: _TintColor
 --- !u!114 &114914516964489592
@@ -1539,6 +1540,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_model: {fileID: 1626345117779772}
   m_rigidbody: {fileID: 54178420708082632}
+  m_hasColorProperty: 1
   m_isUsingInstancedMaterial: 1
   m_colorPropertyName: 
   m_playerId: -1
@@ -1558,12 +1560,12 @@ MonoBehaviour:
   m_specialAttackParticles: {fileID: 198316762952927836}
   m_hurtClip: {fileID: 8300000, guid: 5a3974f6f384e72468ec5fe8fd3c0b12, type: 3}
   m_attackClip: {fileID: 8300000, guid: b8b46c45b73828b46adbb45358f22769, type: 3}
-  m_specialAttackClip: {fileID: 0}
-  m_pickUpClip: {fileID: 0}
-  m_putDownClip: {fileID: 0}
-  m_throwClip: {fileID: 0}
+  m_specialAttackClip: {fileID: 8300000, guid: add5e5a14c21bb04b8111fc9a3e692ec, type: 3}
+  m_pickUpClip: {fileID: 8300000, guid: b24be714cb9772a4a82bcaa69cc6e83f, type: 3}
+  m_putDownClip: {fileID: 8300000, guid: b8b46c45b73828b46adbb45358f22769, type: 3}
+  m_throwClip: {fileID: 8300000, guid: b24be714cb9772a4a82bcaa69cc6e83f, type: 3}
   m_jumpClip: {fileID: 8300000, guid: b24be714cb9772a4a82bcaa69cc6e83f, type: 3}
-  m_landClip: {fileID: 0}
+  m_landClip: {fileID: 8300000, guid: b8b46c45b73828b46adbb45358f22769, type: 3}
   m_animations:
   - m_id: 0
     m_loops: 1

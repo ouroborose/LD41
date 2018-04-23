@@ -365,6 +365,7 @@ public class BaseActor : BaseObject {
                 m_specialAttackReadyParticles.Emit(50);
                 UpdateDetection(0.75f, 3.0f);
                 HandleDealingDamage(4, Vector3.up);
+                AudioManager.Instance.PlayOneShot(m_specialAttackClip);
             }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();

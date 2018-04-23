@@ -11,19 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: -667331979, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   m_Name: joystix monospace
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 114933229
   material: {fileID: 21613360997951794}
-  materialHashCode: 0
+  materialHashCode: 356601286
   fontAssetType: 2
   m_fontInfo:
     Name: Joystix
     PointSize: 10
-    Scale: 0
+    Scale: 1
     CharacterCount: 97
     LineHeight: 12
     Baseline: 0
     Ascender: 10
-    CapHeight: 0
+    CapHeight: 7
     Descender: -2
     CenterLine: 0
     SuperscriptOffset: 10
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 5
     strikethrough: 2.909091
     strikethroughThickness: 5
-    TabWidth: 0
+    TabWidth: 80
     Padding: 5
     AtlasWidth: 256
     AtlasHeight: 128
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 5
     y: 123
-    width: 0
-    height: 0
+    width: 8
+    height: 12
     xOffset: 0
-    yOffset: 0
+    yOffset: 10
     xAdvance: 8
     scale: 1
   - id: 33
@@ -967,7 +967,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: joystix monospace Material
   m_Shader: {fileID: 4800000, guid: edfcf888cd11d9245b91d2883049a57e, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: UNITY_UI_CLIP_RECT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
