@@ -139,6 +139,14 @@ public class BaseObject : MonoBehaviour {
         
     }
 
+    public virtual void SetTexture(Texture t)
+    {
+        for (int i = 0; i < m_renderers.Length; ++i)
+        {
+            m_renderers[i].material.mainTexture = t;
+        }
+    }
+
     public virtual void SetColor(Color c)
     {
         if(m_colorModified && c == m_color)

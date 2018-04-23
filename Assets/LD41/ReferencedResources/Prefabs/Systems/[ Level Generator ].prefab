@@ -157,6 +157,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22e86e9e749418543ae2238bfb2daaf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_damageTextures:
+  - {fileID: 2800000, guid: 5aacf7cb85e4c42f3888a89dfc941d24, type: 3}
+  - {fileID: 2800000, guid: f1a7e5447a88d4398ae46c1b28bb63ec, type: 3}
+  - {fileID: 2800000, guid: 8d21f45a18c65466381ae232f2e400e5, type: 3}
+  - {fileID: 2800000, guid: 9284d2dc45eae496391eb26b392cf242, type: 3}
   m_roadTilesPrefab:
   - {fileID: 1499165247313582, guid: 850a4bee731ba4080a3e37ef8ce0c982, type: 2}
   - {fileID: 1058910785546414, guid: de8da1060a3abd147a82f7948756eb5f, type: 2}

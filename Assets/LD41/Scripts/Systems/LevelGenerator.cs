@@ -51,6 +51,8 @@ public class LevelGenerator : Singleton<LevelGenerator> {
 
     public static bool[] s_sharedRoadPattern = new bool[4];
 
+    public Texture[] m_damageTextures;
+
     public GameObject[] m_roadTilesPrefab;
 
     public GameObject m_groundTilePrefab;
@@ -274,5 +276,12 @@ public class LevelGenerator : Singleton<LevelGenerator> {
         int x = Mathf.RoundToInt(pos.x);
         int y = Mathf.RoundToInt(pos.z);
         return GetTile(x, y);
+    }
+
+    public Texture GetDamageTexture(int currentHp, int maxHp)
+    {
+        float hpPercent = (float)currentHp / maxHp;
+        int index = Mathf.FloorToInt((1.0f - hpPercent) * (m_damageTextures.Length-1));
+        return m_damageTextures[index];
     }
 }

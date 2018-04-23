@@ -8,7 +8,7 @@ public class BaseBuildingPart : BaseObject {
     public const float MIN_BREAK_FORCE = 0.5f;
     public const float MAX_BREAK_FORCE = 0.75f;
 
-    public static readonly Color BROKEN_COLOR = new Color(0.25f, 0.25f, 0.25f);
+    public static readonly Color BROKEN_COLOR = new Color(0.5f, 0.5f, 0.5f);
 
     public enum BuildingPartType
     {
@@ -33,6 +33,12 @@ public class BaseBuildingPart : BaseObject {
         m_rigidbody.isKinematic = true;
         m_currentHp = m_maxHp;
         ResetColor();
+        UpdateDamageVisuals();
+    }
+
+    protected void UpdateDamageVisuals()
+    {
+        SetTexture(LevelGenerator.Instance.GetDamageTexture(m_currentHp, m_maxHp));
     }
 
     public void TakeDamage(int damage, Vector3 impactDir)
@@ -57,6 +63,7 @@ public class BaseBuildingPart : BaseObject {
             {
                 Shake(impactForce);
             }
+            UpdateDamageVisuals();
         }
     }
 
@@ -79,6 +86,7 @@ public class BaseBuildingPart : BaseObject {
         m_rigidbody.AddForce(breakDir * Random.Range(MIN_BREAK_FORCE, MAX_BREAK_FORCE), ForceMode.Impulse);
 
         SetColor(BROKEN_COLOR);
+        UpdateDamageVisuals();
         VFXManager.Instance.DoBreakPuffVFX(transform.position + transform.up * 0.5f);
     }
 

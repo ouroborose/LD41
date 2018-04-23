@@ -71,8 +71,7 @@ public class BaseUIElement : MonoBehaviour {
             }
             return;
         }
-
-        Debug.Log(name);
+        
         switch (m_transitionMethod)
         {
             case TransitionMethod.MOVE:

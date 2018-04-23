@@ -287,37 +287,35 @@ public class BaseActor : BaseObject {
     {
         m_timeSinceLastAttack = 0.0f;
         AnimationID attackID = DoAttack(m_attackComboCount);
-        if (attackID == AnimationID.ATTACK_3)
-        {
-            m_actionDelayTimer = m_comboFinishDelayTime;
-        }
-
-
-        if (m_timeSinceLastAttack < m_comboTimeThreshold && m_attackComboCount < 2)
-        {
-            m_attackComboCount++;
-        }
-        else
-        {
-            m_attackComboCount = 0;
-        }
+        m_attackComboCount++;
     }
 
     protected AnimationID DoAttack(int comboCount)
     {
-        AnimationID attackID = (AnimationID)((int)AnimationID.ATTACK_1 + comboCount);
+        AnimationID attackID = (AnimationID)((int)AnimationID.ATTACK_1 + comboCount%2);
         //Debug.Log(attackID);
         PlayAnimation(attackID, true);
         MoveToward(transform.forward);
-        
-        for(int i = 0; i < m_buildingPartsInRange.Count; ++i)
+
+        int damage = CalculateDamage(attackID);
+
+        for (int i = 0; i < m_buildingPartsInRange.Count; ++i)
         {
             KeyValuePair<RaycastHit, BaseBuildingPart> pair = m_buildingPartsInRange[i];
 
             Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
             impactDir.Normalize();
-            pair.Value.TakeDamage(CalculateDamage(attackID), impactDir);
-            VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal, Random.Range(20, 30));
+            pair.Value.TakeDamage(damage, impactDir);
+            VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal);
+        }
+
+        for(int i = 0; i < m_actorsInRange.Count; ++i)
+        {
+            KeyValuePair<RaycastHit, BaseBuildingPart> pair = m_buildingPartsInRange[i];
+            Vector3 impactDir = pair.Key.point - s_sharedRay.origin;
+            impactDir.Normalize();
+            pair.Value.TakeDamage(damage, impactDir);
+            VFXManager.Instance.DoHitVFX(pair.Key.point, pair.Key.normal);
         }
         return attackID;
     }
@@ -348,7 +346,6 @@ public class BaseActor : BaseObject {
             velocity.y *= 1.1f;
             m_rigidbody.velocity = velocity;
         }
-        
         
         Vector3 pos = m_rigidbody.position;
         Vector3 toPos = transform.position + m_moveDir * (m_moveSpeed * Time.deltaTime);
