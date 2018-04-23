@@ -56,6 +56,11 @@ public class UIManager : Singleton<UIManager> {
         {
             Main.Instance.ModifyScore(PlayerData.PlayerId.PLAYER_2, 100);
         }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            m_timerDisplay.m_timeLeft = 0;
+        }
     }
 #endif
 }
