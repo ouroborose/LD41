@@ -39,4 +39,10 @@ public static class Utils {
     {
         return ALIGNED_ROTATIONS[Random.Range(0, 4)];
     }
+
+    public static Vector3 ThreePointLerp(Vector3 start, Vector3 mid, Vector3 end, float t)
+    {
+        float t2 = t * 2;
+        return Vector3.Lerp(Vector3.LerpUnclamped(start,mid, t2), Vector3.LerpUnclamped(end,mid,2.0f-t2), t);
+    }
 }

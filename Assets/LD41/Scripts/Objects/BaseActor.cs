@@ -176,7 +176,7 @@ public class BaseActor : BaseObject {
         m_buildingPartsInRange.Clear();
         m_actorsInRange.Clear();
 
-        s_sharedRay = new Ray(transform.position + Vector3.up * 0.75f, transform.forward);
+        s_sharedRay = new Ray(transform.position + Vector3.up * 0.65f, transform.forward);
         s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, radius, s_sharedHits, range);
 
         float bestPartValue = float.MaxValue;

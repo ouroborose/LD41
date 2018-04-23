@@ -12,6 +12,7 @@ public class BaseObject : MonoBehaviour {
     public GameObject m_model;
     public Rigidbody m_rigidbody;
 
+    public bool m_hasColorProperty = true;
     public bool m_isUsingInstancedMaterial = true;
     public string m_colorPropertyName = string.Empty;
 
@@ -63,11 +64,15 @@ public class BaseObject : MonoBehaviour {
 
         m_renderers = m_model.GetComponentsInChildren<Renderer>(true);
         
-        m_originalColors = new Color[m_renderers.Length];
-        for(int i = 0; i < m_renderers.Length; ++i)
+        if(m_hasColorProperty)
         {
-            m_originalColors[i] = m_renderers[i].sharedMaterial.GetColor(m_colorPropertyID);
+            m_originalColors = new Color[m_renderers.Length];
+            for (int i = 0; i < m_renderers.Length; ++i)
+            {
+                m_originalColors[i] = m_renderers[i].sharedMaterial.GetColor(m_colorPropertyID);
+            }
         }
+        
     }
 
 
@@ -115,7 +120,12 @@ public class BaseObject : MonoBehaviour {
 
     public virtual void ResetColor()
     {
-        if(!m_colorModified)
+        if (!m_hasColorProperty)
+        {
+            return;
+        }
+
+        if (!m_colorModified)
         {
             return;
         }
@@ -149,7 +159,12 @@ public class BaseObject : MonoBehaviour {
 
     public virtual void SetColor(Color c)
     {
-        if(m_colorModified && c == m_color)
+        if (!m_hasColorProperty)
+        {
+            return;
+        }
+
+        if (m_colorModified && c == m_color)
         {
             return;
         }

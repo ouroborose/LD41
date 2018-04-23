@@ -12,6 +12,7 @@ public class CameraController : Singleton<CameraController> {
     public float m_xViewDistScaler = 1.0f;
     public float m_yViewDistScaler = 1.5f;
 
+    public float m_viewDist = 1.0f;
 
     protected Bounds m_bounds = new Bounds();
     public PostProcessingProfile m_postProcessingProfile;
@@ -46,9 +47,9 @@ public class CameraController : Singleton<CameraController> {
         
         float xViewDist = (max.x - min.x) * m_xViewDistScaler;
         float yViewDist = (max.y - min.y) * m_yViewDistScaler;
-        float dist = Mathf.Max(m_minDistance, Mathf.Max(xViewDist, yViewDist));
-        Vector3 goalPos = center - transform.forward * dist;
-        m_depthOfFieldSettings.focusDistance = dist + 0.5f;
+        m_viewDist = Mathf.Max(m_minDistance, Mathf.Max(xViewDist, yViewDist));
+        Vector3 goalPos = center - transform.forward * m_viewDist;
+        m_depthOfFieldSettings.focusDistance = m_viewDist + 0.5f;
         m_postProcessingProfile.depthOfField.settings = m_depthOfFieldSettings;
         transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime / m_movementTime);
     }

@@ -276,7 +276,7 @@ public class LevelGenerator : Singleton<LevelGenerator> {
     public Texture GetDamageTexture(int currentHp, int maxHp)
     {
         float hpPercent = (float)currentHp / maxHp;
-        int index = Mathf.FloorToInt((1.0f - hpPercent) * (m_damageTextures.Length-1));
+        int index = Mathf.Max(Mathf.FloorToInt((1.0f - hpPercent) * (m_damageTextures.Length-1)), 0);
         return m_damageTextures[index];
     }
 }

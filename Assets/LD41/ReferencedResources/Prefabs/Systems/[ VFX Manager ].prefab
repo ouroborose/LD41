@@ -145,6 +145,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_hitVFX: {fileID: 198657393168099970}
+  m_minHitPuffs: 20
+  m_maxHitPuffs: 30
   m_breakPuffVFX: {fileID: 198079681603400038}
   m_minBreakPuffs: 30
   m_maxBreakPuffs: 40

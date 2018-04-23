@@ -194,9 +194,25 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114686458416554696, guid: 632e676053f61094e8c59889db485dcf,
+        type: 2}
+      propertyPath: m_dooberPool.m_prefab
+      value: 
+      objectReference: {fileID: 1573051320834468, guid: 809b210238af1294ba6e085e348c7ddd,
+        type: 2}
+    - target: {fileID: 114686458416554696, guid: 632e676053f61094e8c59889db485dcf,
+        type: 2}
+      propertyPath: m_dooberPool.m_container
+      value: 
+      objectReference: {fileID: 1157715049}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 632e676053f61094e8c59889db485dcf, type: 2}
   m_IsPrefabParent: 0
+--- !u!4 &1157715049 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4985949640470022, guid: 632e676053f61094e8c59889db485dcf,
+    type: 2}
+  m_PrefabInternal: {fileID: 1006763642}
 --- !u!108 &1432036701 stripped
 Light:
   m_PrefabParentObject: {fileID: 108290812395917192, guid: 71cc113bcae8dce4d8b8806c25739791,
@@ -282,14 +298,6 @@ Prefab:
     - target: {fileID: 4966771671176562, guid: 71cc113bcae8dce4d8b8806c25739791, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4442723170089628, guid: 71cc113bcae8dce4d8b8806c25739791, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4153530291815930, guid: 71cc113bcae8dce4d8b8806c25739791, type: 2}
-      propertyPath: m_RootOrder
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 71cc113bcae8dce4d8b8806c25739791, type: 2}

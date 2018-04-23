@@ -217,10 +217,10 @@ MonoBehaviour:
   - {fileID: 114421899704054894}
   - {fileID: 114405353260711516}
   m_playerDatas:
-  - m_color: {r: 0, g: 0, b: 1, a: 1}
+  - m_color: {r: 0.46666667, g: 0.47843137, b: 1, a: 1}
     m_score: 0
     m_player: {fileID: 114421899704054894}
-  - m_color: {r: 1, g: 0, b: 0, a: 1}
+  - m_color: {r: 0.89411765, g: 0.29803923, b: 0.29803923, a: 1}
     m_score: 0
     m_player: {fileID: 114405353260711516}
 --- !u!114 &114405353260711516
@@ -275,6 +275,7 @@ MonoBehaviour:
   m_minDistance: 7.5
   m_xViewDistScaler: 1.15
   m_yViewDistScaler: 2
+  m_viewDist: 1
   m_postProcessingProfile: {fileID: 11400000, guid: c1f11518d5cd2de41a9b2c3d7f87875c,
     type: 2}
 --- !u!124 &124540891032891940

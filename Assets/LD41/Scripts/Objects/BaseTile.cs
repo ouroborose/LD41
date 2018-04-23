@@ -96,12 +96,23 @@ public class BaseTile : BaseObject {
         int scoreGained = 0;
         int totalValue = 0;
 
-        bool roofed = false;
+        bool roofed = GetTopPart().m_type == BaseBuildingPart.BuildingPartType.Roof;
+        if(roofed)
+        {
+            ownerColor.r += 0.5f;
+            ownerColor.g += 0.5f;
+            ownerColor.b += 0.5f;
+        }
 
         for(int i = 0; i < m_buildingParts.Count; ++i)
         {
             BaseBuildingPart part = m_buildingParts[i];
             part.SetColor(ownerColor);
+
+            if(roofed)
+            {
+                part.RoofUpgrade();
+            }
 
             int scoreValue = i + 1;
             if (part.m_owner != owner)
@@ -114,10 +125,6 @@ public class BaseTile : BaseObject {
                 else
                 {
                     scoreGained += scoreValue;
-                    if(part.m_type == BaseBuildingPart.BuildingPartType.Roof)
-                    {
-                        roofed = true;
-                    }
                 }
             }
 
@@ -130,8 +137,12 @@ public class BaseTile : BaseObject {
             scoreGained += totalValue;
         }
 
+        Vector3 pos = m_buildingParts[m_buildingParts.Count - 1].transform.position;
+
         Main.Instance.ModifyScore(m_owner, scoreLost);
         m_owner = owner;
         Main.Instance.ModifyScore(m_owner, scoreGained);
+
+        VFXManager.Instance.ThrowScoreDoober(pos, m_owner, scoreGained, roofed);
     }
 }

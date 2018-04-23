@@ -38,6 +38,11 @@ public class BaseBuildingPart : BaseObject {
         UpdateDamageVisuals();
     }
 
+    public void RoofUpgrade()
+    {
+        m_currentHp = m_maxHp * 3;
+    }
+
     protected void UpdateDamageVisuals()
     {
         SetTexture(LevelGenerator.Instance.GetDamageTexture(m_currentHp, m_maxHp));
