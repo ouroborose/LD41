@@ -5,6 +5,7 @@ using UnityEngine;
 public class AudioManager : Singleton<AudioManager> {
     [SerializeField] protected AudioSource m_bgMusic;
 
+    [SerializeField] protected AudioClip m_endMusic;
     [SerializeField] protected AudioClip m_panicMusic;
     [SerializeField] protected AudioClip m_stageMusic;
 
@@ -14,7 +15,7 @@ public class AudioManager : Singleton<AudioManager> {
 
     public void PlayPanicMusic()
     {
-        PlayBGMusic(m_panicMusic);
+        PlayBGMusic(m_panicMusic, false);
     }
 
     public void PlayStageMusic()
@@ -22,9 +23,16 @@ public class AudioManager : Singleton<AudioManager> {
         PlayBGMusic(m_stageMusic);
     }
 
-    public void PlayBGMusic(AudioClip music)
+    public void PlayEndMusic()
+    {
+        PlayBGMusic(m_endMusic);
+    }
+
+    public void PlayBGMusic(AudioClip music, bool loop = true, float volume = 0.5f)
     {
         m_bgMusic.clip = music;
+        m_bgMusic.loop = loop;
+        m_bgMusic.volume = volume;
         m_bgMusic.Play();
     }
 
