@@ -149,7 +149,7 @@ public class BaseActor : BaseObject {
     {
         base.ControlledUpdate();
 
-        UpdateDetection(0.3f, m_hitRange);
+        UpdateDetection(0.35f, m_hitRange);
         UpdateAction();
         UpdateMovement();
         UpdateAnimationState();
@@ -176,7 +176,7 @@ public class BaseActor : BaseObject {
         m_buildingPartsInRange.Clear();
         m_actorsInRange.Clear();
 
-        s_sharedRay = new Ray(transform.position + Vector3.up * 0.65f, transform.forward);
+        s_sharedRay = new Ray(transform.position + Vector3.up * 0.7f, transform.forward);
         s_sharedHitsCount = Physics.SphereCastNonAlloc(s_sharedRay, radius, s_sharedHits, range);
 
         float bestPartValue = float.MaxValue;
