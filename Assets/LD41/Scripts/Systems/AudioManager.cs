@@ -10,9 +10,9 @@ public class AudioManager : Singleton<AudioManager> {
     
     public void StartStageMusic()
     {
-        m_bgMusic.Play();
         m_titleMusic.Stop();
         m_panicMusic.Stop();
+        m_bgMusic.Play();
     }
 
     public void StartPanicMusic()
@@ -26,7 +26,7 @@ public class AudioManager : Singleton<AudioManager> {
     public void StartTitleMusic()
     {
         m_bgMusic.Stop();
-        m_titleMusic.Play();
         m_panicMusic.Stop();
+        m_titleMusic.Play();
     }
 }
