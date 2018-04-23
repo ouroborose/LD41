@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+    public const float HOLD_ACTION_THRESHOLD = 1.0f;
+
     public KeyCode m_upKey = KeyCode.UpArrow;
     public KeyCode m_downKey = KeyCode.DownArrow;
     public KeyCode m_rightKey = KeyCode.RightArrow;
@@ -13,6 +15,7 @@ public class PlayerController : MonoBehaviour {
     public BaseActor m_character;
 
     protected Transform m_camTrans;
+    protected float m_actionHoldTimer = 0.0f;
 
     protected void Start()
     {
@@ -58,6 +61,18 @@ public class PlayerController : MonoBehaviour {
         }
 
         if(Input.GetKeyDown(m_actionKey))
+        {
+            m_actionHoldTimer = 0.0f;
+        }
+        else if(Input.GetKey(m_actionKey))
+        {
+            m_actionHoldTimer += Time.deltaTime;
+            if(m_actionHoldTimer > HOLD_ACTION_THRESHOLD)
+            {
+                m_character.ActivateHoldAction();
+            }
+        }
+        if(Input.GetKeyUp(m_actionKey))
         {
             m_character.DoAction();
         }

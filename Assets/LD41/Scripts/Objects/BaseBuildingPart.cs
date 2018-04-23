@@ -28,6 +28,8 @@ public class BaseBuildingPart : BaseObject {
     protected int m_currentHp = 0;
     protected float m_pickupDelayTimer = 0.0f;
 
+    protected BaseActor m_thrower = null;
+
     public virtual void Reset()
     {
         m_rigidbody.isKinematic = true;
@@ -82,6 +84,7 @@ public class BaseBuildingPart : BaseObject {
         breakDir += impactDir;
         breakDir.Normalize();
 
+        RestoreRigidbody();
         m_rigidbody.isKinematic = false;
         m_rigidbody.AddForce(breakDir * Random.Range(MIN_BREAK_FORCE, MAX_BREAK_FORCE), ForceMode.Impulse);
 
@@ -92,6 +95,7 @@ public class BaseBuildingPart : BaseObject {
 
     public void PickUp(Transform holdPoint)
     {
+        m_thrower = null;
         m_isBeingCarried = true;
         transform.parent = holdPoint;
         transform.DOLocalMove(Vector3.zero, 0.25f, true).SetDelay(0.25f);
@@ -110,5 +114,54 @@ public class BaseBuildingPart : BaseObject {
         placementTile.Claim(owner);
 
         VFXManager.Instance.DoPlacePuffVFX(transform.position);
+    }
+
+    public void Drop()
+    {
+        m_isBeingCarried = false;
+        transform.parent = null;
+        DOTween.Kill(transform);
+        Break(Vector3.up);
+    }
+
+    public void Throw(BaseActor thrower, Vector3 throwForce)
+    {
+        m_thrower = thrower;
+        m_isBeingCarried = false;
+        transform.parent = null;
+        RestoreRigidbody();
+        DOTween.Kill(transform);
+
+        m_rigidbody.AddForce(throwForce, ForceMode.Impulse);
+    }
+
+    protected void OnCollisionEnter(Collision collision)
+    {
+        if(m_thrower == null)
+        {
+            return;
+        }
+        
+        if(collision.collider == LevelGenerator.Instance.m_groundCollider)
+        {
+            m_thrower = null;
+            return;
+        }
+
+
+        BaseBuildingPart part = collision.collider.GetComponentInParent<BaseBuildingPart>();
+        if(part != null)
+        {
+            part.TakeDamage(3, -collision.contacts[0].normal);
+        }
+        else
+        {
+            BaseActor actor = collision.collider.GetComponentInParent<BaseActor>();
+            if(actor != null && m_thrower != actor)
+            {
+                actor.TakeDamage(2, -collision.contacts[0].normal);
+            }
+        }
+
     }
 }

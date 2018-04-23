@@ -72,7 +72,7 @@ public class LevelGenerator : Singleton<LevelGenerator> {
     public float m_roofProbability = 0.5f;
 
 
-    [SerializeField] protected BoxCollider m_groundCollider;
+    public BoxCollider m_groundCollider;
 
     public int m_stepSize { get; protected set; }
     public int m_totalWidth { get; protected set; }

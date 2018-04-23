@@ -7,7 +7,9 @@ public class BaseActor : BaseObject {
     public static readonly Color PLACEMENT_ALLOWED_COLOR = new Color(0, 1, 0, 0.5f);
     public static readonly Color PLACEMENT_NOT_ALLOWED_COLOR = new Color(1, 0, 0, 0.5f);
 
+    public const float MAX_VELOCITY = 10.0f;
     public const float KNOCK_BACK_FORCE = 10.0f;
+    public const float SPECIAL_CHARGE_TIME = 3.0f;
 
     public static RaycastHit[] s_sharedHits = new RaycastHit[50];
     public static Ray s_sharedRay = new Ray();
@@ -22,18 +24,23 @@ public class BaseActor : BaseObject {
     [SerializeField] protected float m_jumpVelocity = 10.0f;
 
     [Header("Actions")]
-    [SerializeField] protected float m_actionDelayTime = 0.1f;
-    [SerializeField] protected float m_comboFinishDelayTime = 0.5f;
-    [SerializeField] protected float m_comboTimeThreshold = 0.25f;
     [SerializeField] protected float m_hitRange = 1.0f;
+    [SerializeField] protected float m_actionDelayTime = 0.1f;
+    [SerializeField] protected float m_comboTimeThreshold = 0.25f;
+    [SerializeField] protected float m_specialAttackActionDelay = 1.0f;
+    [SerializeField] protected float m_throwForce = 10.0f;
 
     [SerializeField] protected Transform m_holdPoint;
     [SerializeField] protected BaseObject m_placementIndicator;
 
+    [SerializeField] protected ParticleSystem m_holdActivatedParticles;
+    protected ParticleSystem.EmissionModule m_holdActivatedParticlesEmission;
+
+    [SerializeField] protected ParticleSystem m_specialAttackParticles;
+    protected ParticleSystem.EmissionModule m_specialAttackPartieleEmission;
 
     [Header("VFX")]
-    [SerializeField]
-    protected ParticleSystem m_movementDust;
+    [SerializeField] protected ParticleSystem m_movementDust;
     protected ParticleSystem.EmissionModule m_movementDustEmission;
 
     public enum AnimationID : int
@@ -92,6 +99,9 @@ public class BaseActor : BaseObject {
     protected List<KeyValuePair<RaycastHit, BaseBuildingPart>> m_buildingPartsInRange = new List<KeyValuePair<RaycastHit, BaseBuildingPart>>();
     protected List<KeyValuePair<RaycastHit, BaseActor>> m_actorsInRange = new List<KeyValuePair<RaycastHit, BaseActor>>();
 
+    protected bool m_holdActionActivated = false;
+    protected float m_specialAttackChargeTimer = 0.0f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -105,6 +115,8 @@ public class BaseActor : BaseObject {
         m_placementIndicator.transform.rotation = Quaternion.identity;
         m_placementIndicator.gameObject.SetActive(false);
 
+        m_holdActivatedParticlesEmission = m_holdActivatedParticles.emission;
+        m_specialAttackPartieleEmission = m_specialAttackParticles.emission;
         m_movementDustEmission = m_movementDust.emission;
 
         PlayAnimation(AnimationID.IDLE);
@@ -124,6 +136,11 @@ public class BaseActor : BaseObject {
         UpdateMovement();
         UpdateAnimationState();
         UpdateAnimation();
+    }
+
+    protected void FixedUpdate()
+    {
+        m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, MAX_VELOCITY);
     }
 
     protected override void OnKillPlaneHit()
@@ -206,34 +223,52 @@ public class BaseActor : BaseObject {
 
     protected void UpdateAction()
     {
+        
+        if(m_holdActionActivated && m_heldPart == null)
+        {
+            m_specialAttackChargeTimer += Time.deltaTime;
+            if(m_specialAttackChargeTimer >= SPECIAL_CHARGE_TIME)
+            {
+
+            }
+        }
+
         m_actionDelayTimer -= Time.deltaTime;
         if (m_actionRequested && m_actionDelayTimer <= 0.0f)
         {
             m_actionDelayTimer = m_actionDelayTime;
             m_actionRequested = false;
 
-            if(m_heldPart == null)
+            if (m_holdActionActivated)
             {
-                if(m_pickUpCandidate == null || m_attackComboCount > 0)
-                {
-                    HandleAttacking();
-                }
-                else
-                {
-                    PickUpPart(m_pickUpCandidate);
-                }
+                DoHoldAction();
             }
             else
             {
-                if(m_placementAllowed)
+                if (m_heldPart == null)
                 {
-                    PlacePart();
+                    if (m_pickUpCandidate == null || m_attackComboCount > 0)
+                    {
+                        HandleAttacking();
+                    }
+                    else
+                    {
+                        PickUpPart(m_pickUpCandidate);
+                    }
                 }
                 else
                 {
-                    HandlePlacementErrorFeedback();
+                    if (m_placementAllowed)
+                    {
+                        PlacePart();
+                    }
+                    else
+                    {
+                        HandlePlacementErrorFeedback();
+                    }
                 }
             }
+           
         }
 
         m_timeSinceLastAttack += Time.deltaTime;
@@ -241,6 +276,35 @@ public class BaseActor : BaseObject {
         {
             m_attackComboCount = 0;
         }
+    }
+    
+    public void CancelAction()
+    {
+        m_holdActionActivated = false;
+        m_holdActivatedParticlesEmission.enabled = false;
+        m_actionRequested = false;
+    }
+
+    protected void DoHoldAction()
+    {
+        m_holdActionActivated = false;
+        if (m_heldPart != null)
+        {
+            // throw part
+            ThrowPart();
+        }
+        else if (m_specialAttackChargeTimer > SPECIAL_CHARGE_TIME)
+        {
+            // do special attack
+
+            m_actionDelayTimer = m_specialAttackActionDelay;
+        }
+        else
+        {
+            HandleAttacking();
+        }
+
+        CancelAction();
     }
 
     protected void PickUpPart(BaseBuildingPart pickup)
@@ -283,6 +347,20 @@ public class BaseActor : BaseObject {
         {
             return;
         }
+
+        m_heldPart.Drop();
+        m_heldPart = null;
+    }
+
+    protected void ThrowPart()
+    {
+        if(m_heldPart == null)
+        {
+            return;
+        }
+
+        m_heldPart.Throw(this, transform.forward * m_throwForce);
+        m_heldPart = null;
     }
 
     protected void HandleAttacking()
@@ -350,7 +428,12 @@ public class BaseActor : BaseObject {
         }
         
         Vector3 pos = m_rigidbody.position;
-        Vector3 toPos = transform.position + m_moveDir * (m_moveSpeed * Time.deltaTime);
+        float speed = m_moveSpeed;
+        if(m_holdActionActivated)
+        {
+            speed *= 0.5f;
+        }
+        Vector3 toPos = transform.position + m_moveDir * (speed * Time.deltaTime);
         toPos.y = pos.y;
 
         if (m_moveDir != Vector3.zero)
@@ -462,6 +545,13 @@ public class BaseActor : BaseObject {
         m_actionRequested = true;
     }
 
+    public void ActivateHoldAction()
+    {
+        m_holdActionActivated = true;
+        m_holdActivatedParticlesEmission.enabled = true;
+        m_specialAttackChargeTimer = 0.0f;
+    }
+
     public void SetSpawnPos(Vector3 spawnPos, bool respawn = true)
     {
         m_spawnPos = spawnPos;
@@ -484,5 +574,7 @@ public class BaseActor : BaseObject {
     public void TakeDamage(int damage, Vector3 impactDir)
     {
         m_rigidbody.AddForce(impactDir * KNOCK_BACK_FORCE * damage, ForceMode.Impulse);
+        DropPart();
+        CancelAction();
     }
 }
