@@ -219,10 +219,8 @@ MonoBehaviour:
   m_playerDatas:
   - m_color: {r: 0.46666667, g: 0.47843137, b: 1, a: 1}
     m_score: 0
-    m_player: {fileID: 114421899704054894}
   - m_color: {r: 0.89411765, g: 0.29803923, b: 0.29803923, a: 1}
     m_score: 0
-    m_player: {fileID: 114405353260711516}
 --- !u!114 &114405353260711516
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -234,12 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 660c791d9ac2d774eb417c28b13b8636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_upKey: 273
-  m_downKey: 274
-  m_rightKey: 275
-  m_leftKey: 276
-  m_actionKey: 46
-  m_jumpKey: 44
+  m_buttomMapping: {fileID: 11400000, guid: 9e867dd48d619664d9bb66a3d652e895, type: 2}
   m_character: {fileID: 0}
 --- !u!114 &114421899704054894
 MonoBehaviour:
@@ -252,12 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 660c791d9ac2d774eb417c28b13b8636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_upKey: 119
-  m_downKey: 115
-  m_rightKey: 100
-  m_leftKey: 97
-  m_actionKey: 50
-  m_jumpKey: 49
+  m_buttomMapping: {fileID: 11400000, guid: 693eb5b75d296064ba179169d8767951, type: 2}
   m_character: {fileID: 0}
 --- !u!114 &114847099130037064
 MonoBehaviour:

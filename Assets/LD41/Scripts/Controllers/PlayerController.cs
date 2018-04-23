@@ -1,16 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+    
     public const float HOLD_ACTION_THRESHOLD = 1.0f;
 
-    public KeyCode m_upKey = KeyCode.UpArrow;
-    public KeyCode m_downKey = KeyCode.DownArrow;
-    public KeyCode m_rightKey = KeyCode.RightArrow;
-    public KeyCode m_leftKey = KeyCode.LeftArrow;
-
-    public KeyCode m_actionKey = KeyCode.Z;
-    public KeyCode m_jumpKey = KeyCode.X;
-
+    public ButtonMapping m_buttomMapping;
 
     public BaseActor m_character;
 
@@ -42,19 +37,19 @@ public class PlayerController : MonoBehaviour {
         Vector3 forward = Vector3.ProjectOnPlane(m_camTrans.forward, Vector3.up).normalized;
         Vector3 right = m_camTrans.right;
         
-        if (Input.GetKey(m_upKey))
+        if (Input.GetKey(m_buttomMapping.m_upKey))
         {
             moveDir += forward;
         }
-        if (Input.GetKey(m_downKey))
+        if (Input.GetKey(m_buttomMapping.m_downKey))
         {
             moveDir -= forward;
         }
-        if (Input.GetKey(m_rightKey))
+        if (Input.GetKey(m_buttomMapping.m_rightKey))
         {
             moveDir += right;
         }
-        if (Input.GetKey(m_leftKey))
+        if (Input.GetKey(m_buttomMapping.m_leftKey))
         {
             moveDir -= right;
         }
@@ -76,17 +71,17 @@ public class PlayerController : MonoBehaviour {
 
         m_character.MoveToward(moveDir);
 
-        if(Input.GetKeyDown(m_jumpKey))
+        if(Input.GetKeyDown(m_buttomMapping.m_jumpKey))
         {
             m_character.Jump();
             m_character.m_run = false;
         }
 
-        if(Input.GetKeyDown(m_actionKey))
+        if(Input.GetKeyDown(m_buttomMapping.m_actionKey))
         {
             m_actionHoldTimer = 0.0f;
         }
-        else if(Input.GetKey(m_actionKey))
+        else if(Input.GetKey(m_buttomMapping.m_actionKey))
         {
             m_actionHoldTimer += Time.deltaTime;
             if(m_actionHoldTimer > HOLD_ACTION_THRESHOLD)
@@ -94,7 +89,7 @@ public class PlayerController : MonoBehaviour {
                 m_character.ActivateHoldAction();
             }
         }
-        if(Input.GetKeyUp(m_actionKey))
+        if(Input.GetKeyUp(m_buttomMapping.m_actionKey))
         {
             m_character.DoAction();
             m_character.m_run = false;

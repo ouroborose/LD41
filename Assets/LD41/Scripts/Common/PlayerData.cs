@@ -15,5 +15,4 @@ public class PlayerData  {
 
     public Color m_color = Color.white;
     public int m_score = 0;
-    public PlayerController m_player;
 }

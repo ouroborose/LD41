@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a29b44f5e20ac4eac917a1db2821a9, type: 3}
+  m_Name: Player2ButtonMapping
+  m_EditorClassIdentifier: 
+  m_upKey: 273
+  m_downKey: 274
+  m_rightKey: 275
+  m_leftKey: 276
+  m_jumpKey: 44
+  m_actionKey: 46

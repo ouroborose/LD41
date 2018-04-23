@@ -1851,7 +1851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e053fec013ea6434196d2fdfe87aeff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerId: 0
+  m_buttonMapping: {fileID: 11400000, guid: 693eb5b75d296064ba179169d8767951, type: 2}
   m_up: {fileID: 114037612309713074}
   m_down: {fileID: 114861518163849068}
   m_left: {fileID: 114572425837658562}
@@ -3111,7 +3111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e053fec013ea6434196d2fdfe87aeff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerId: 1
+  m_buttonMapping: {fileID: 11400000, guid: 9e867dd48d619664d9bb66a3d652e895, type: 2}
   m_up: {fileID: 114437110868554398}
   m_down: {fileID: 114047556728304798}
   m_left: {fileID: 114649823970184404}
