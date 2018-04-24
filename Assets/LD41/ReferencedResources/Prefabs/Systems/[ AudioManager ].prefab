@@ -285,12 +285,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bgMusic: {fileID: 82913731368728912}
-  m_endMusic: {fileID: 8300000, guid: ee04364006615b14292eb5a2402c003f, type: 3}
+  m_endMusic: {fileID: 8300000, guid: 6ee70f19ca133b9418e388bfb0afa921, type: 3}
   m_panicMusic: {fileID: 8300000, guid: aaf12bbac331d9a46a6e8600c8c2f88c, type: 3}
   m_stageMusic: {fileID: 8300000, guid: 7f33c653ad54e4d4fb4d53c0464959ce, type: 3}
   m_audioSourcePool:
-    m_prefab: {fileID: 1008686388775004}
-    m_container: {fileID: 4311603222636148}
-  m_explosionClips:
-  - {fileID: 8300000, guid: 8813f37c0925a90408987c78bc6c1768, type: 3}
-  - {fileID: 8300000, guid: add5e5a14c21bb04b8111fc9a3e692ec, type: 3}
+    m_prefab: {fileID: 0}
+    m_container: {fileID: 0}
+  m_explosionClips: []
