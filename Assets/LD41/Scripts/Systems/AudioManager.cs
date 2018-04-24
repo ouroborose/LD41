@@ -25,7 +25,7 @@ public class AudioManager : Singleton<AudioManager> {
 
     public void PlayEndMusic()
     {
-        PlayBGMusic(m_endMusic);
+        PlayBGMusic(m_endMusic, false);
     }
 
     public void PlayBGMusic(AudioClip music, bool loop = true, float volume = 0.5f)
